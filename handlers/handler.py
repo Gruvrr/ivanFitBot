@@ -5,23 +5,27 @@ from aiogram.types import Message, CallbackQuery
 import handlers.questionary
 from keyboards import inline
 from utils.db import connect, close
-from handlers.main_menu import main_menu
+from handlers.main_menu import main_menu, main_manu_sub
 router = Router()
-
-
 
 @router.message(CommandStart())
 async def get_start(message: Message):
     conn = connect()
     try:
         with conn.cursor() as cursor:
-            cursor.execute(f"SELECT telegram_user_id from users WHERE telegram_user_id = {message.from_user.id}")
-            if not cursor.fetchone():
+            cursor.execute(f"SELECT telegram_user_id, subscription_days from users WHERE telegram_user_id = {message.from_user.id}")
+            result = cursor.fetchone()
+            if not result:
                 print("Начало выполнения функции get_start")
                 await message.answer(text="Для продолжения прими пользовательское соглашение и публичную оферту ",
                                      reply_markup=inline.accept_button)
             else:
-                await main_menu(message)
+                user_id, subscription_days = result  # Распаковываем кортеж
+
+                if subscription_days != 0:
+                    await main_manu_sub(message, subscription_days)
+                else:
+                    await main_menu(message)
     except Exception as _ex:
         print("ERROR", _ex)
     finally:
@@ -48,6 +52,7 @@ async def hello_msg(callback_query: CallbackQuery, bot: Bot, state: FSMContext):
                                        f"▪️Поддержка 24/7\n\n"
                                        f"После оплаты возможна задержка до 20 минут", reply_markup=inline.subscribe_keyboard
                                        )
+                await callback_query.answer()
     except Exception as _ex:
         print("ERROR", _ex)
     finally:

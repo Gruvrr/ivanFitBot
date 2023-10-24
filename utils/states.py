@@ -9,3 +9,13 @@ class Form(StatesGroup):
     phone_number = State()
     email = State()
     city = State()
+
+
+class Link(StatesGroup):
+    number = State()
+    link = State()
+
+
+class Meal(StatesGroup):
+    name = State()
+    description = State()

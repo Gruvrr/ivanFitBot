@@ -1,5 +1,7 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from utils.db import connect, close
+from aiogram import Router, F
+router = Router()
 accept_button = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
@@ -54,3 +56,46 @@ main_menu_keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard=
         )
     ]
 ])
+
+
+success_trening_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(
+            text="Тренировки",
+            callback_data="trening"
+        ),
+        InlineKeyboardButton(
+            text="Питание",
+            callback_data="meal"
+        )
+    ],
+    [
+        InlineKeyboardButton(text="Помощь", callback_data="help")
+    ]
+])
+
+
+async def generate_meal_keyboard():
+    conn = connect()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("SELECT meal_name FROM meals;")
+        meals = cursor.fetchall()
+
+        # Собираем все кнопки в список
+        buttons = [InlineKeyboardButton(text=meal[0], callback_data=f"meal:{meal[0]}") for meal in meals]
+
+        # Создаем InlineKeyboardMarkup, передавая кнопки как список списков
+        keyboard_markup = InlineKeyboardMarkup(inline_keyboard=[buttons])
+
+        return keyboard_markup
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
+    finally:
+        cursor.close()
+        conn.close()
+

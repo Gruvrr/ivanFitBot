@@ -1,7 +1,9 @@
 from aiogram.types import CallbackQuery, LabeledPrice, PreCheckoutQuery, Message
 from aiogram import Router, Bot
 import time
+from handlers.handler import start_msg
 from utils.db import connect, close
+from aiogram import F
 
 router = Router()
 
@@ -79,7 +81,7 @@ async def order(callback: CallbackQuery, bot: Bot):
         await bot.send_invoice(
             chat_id=callback.from_user.id,
             title="Подписка на тренировки",
-            description="Тестовые платежи на покуппку подписки тренировок",
+            description="Тестовые платежи на покупку подписки тренировок",
             provider_token="381764678:TEST:69512",
             currency="rub",
             prices=[
@@ -101,7 +103,7 @@ async def order(callback: CallbackQuery, bot: Bot):
             payload=unique_payload
         )
     except Exception as _ex:
-        print("ERROR EXEPTION ", _ex)
+        print("ERROR EXCEPTION ", _ex)
     finally:
         print("All GOOD")
 
@@ -116,7 +118,7 @@ async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery, bot: Bot):
         print("Обработка платежа успешно!")
 
 
-@router.message()
+@router.message(F.successful_payment)
 async def successful_payment(message: Message):
     # Обновляем статус платежа в базе данных
     unique_payload = message.successful_payment.invoice_payload
@@ -128,3 +130,4 @@ async def successful_payment(message: Message):
            f"\r\nОплата прошла успешно!")
     await message.answer(msg)
     time.sleep(3)
+    await start_msg(message)

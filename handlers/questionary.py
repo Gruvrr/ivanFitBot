@@ -1,5 +1,4 @@
 import time
-
 import psycopg2
 from aiogram import F, Router
 from aiogram.types import Message, ReplyKeyboardRemove, CallbackQuery
@@ -7,7 +6,6 @@ from aiogram.fsm.context import FSMContext
 
 import handlers.main_menu
 from utils.states import Form
-from aiogram.filters import Command
 import re
 from dotenv import load_dotenv
 from os import getenv
