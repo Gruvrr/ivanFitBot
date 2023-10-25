@@ -39,13 +39,13 @@ gender_keyboard = InlineKeyboardMarkup(inline_keyboard=[
 
 subscribe_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [
-        InlineKeyboardButton(text="Купить - 777 р", callback_data='pay'),
+        InlineKeyboardButton(text="Купить - 777 🛒", callback_data='pay'),
     ],
     [
-        InlineKeyboardButton(text="Активировать промокод", callback_data="promocode")
+        InlineKeyboardButton(text="Активировать промокод 🎁", callback_data="promocode")
     ],
     [
-        InlineKeyboardButton(text="В главное меню", callback_data="main_menu")
+        InlineKeyboardButton(text="В главное меню 🔙", callback_data="main_menu")
     ]
 ]
 )
@@ -53,17 +53,17 @@ subscribe_keyboard = InlineKeyboardMarkup(inline_keyboard=[
 main_menu_keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
-            text="Оплатить",
+            text="Оплатить 💵",
             callback_data="want_pay"
         )
     ],
     [
         InlineKeyboardButton(
-            text="О проекте",
+            text="О проекте 💪",
             callback_data="about"
         ),
         InlineKeyboardButton(
-            text="Помощь",
+            text="Помощь ❓",
             callback_data="help"
         )
     ]
@@ -73,11 +73,11 @@ main_menu_keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard=
 success_trening_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
-            text="Тренировки",
-            callback_data="trening"
+            text="Тренировки 🏃🏻‍♂️",
+            callback_data="training"
         ),
         InlineKeyboardButton(
-            text="Питание",
+            text="Питание 🍏",
             callback_data="meal"
         )
     ],
@@ -117,7 +117,7 @@ async def generate_meal_keyboard():
 next_button = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
-            text="Далее",
+            text="Далее ➡️",
             callback_data="next1"
         )
     ]
@@ -129,7 +129,7 @@ next_button = InlineKeyboardMarkup(inline_keyboard=[
 next_button2 = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
-            text="Далее",
+            text="Далее ➡️",
             callback_data="next2"
         )
     ]
@@ -141,10 +141,75 @@ next_button2 = InlineKeyboardMarkup(inline_keyboard=[
 next_button3 = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
-            text="Далее",
+            text="Далее ➡️",
             callback_data="next3"
         )
     ]
 ],
     resize_keyboard=True
 )
+
+
+help_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(text="Общение 🗣", callback_data="speak"),
+        InlineKeyboardButton(text="Вопрос/Ответ 🆘", callback_data="qwestion/answer")
+    ],
+    [
+        InlineKeyboardButton(text="Получить быстрый ответ ❓", callback_data="quick_answer")
+    ],
+    [
+        InlineKeyboardButton(text="Проблема с оплатой 💸", callback_data="problem_pay")
+    ],
+    [
+        InlineKeyboardButton(text="Назад 🔙", callback_data="back_main_menu")
+    ]
+])
+
+
+question_answer_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(text="Питание 🍏", callback_data="meal_question"),
+        InlineKeyboardButton(text="Тренировки 🏃", callback_data="training_question")
+    ],
+    [
+        InlineKeyboardButton(text="В главное меню ↩️", callback_data="back_main_menu")
+    ]
+])
+
+meal_question_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(text="Рекомендации 👤", callback_data="recomendation")
+    ],
+    [
+        InlineKeyboardButton(text="Назад 🔙", callback_data="qwestion/answer"),
+        InlineKeyboardButton(text="В главное меню ↩️", callback_data="back_main_menu")
+    ]
+])
+
+
+training_question_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(text="Рекомендации 👤", callback_data="recomendation_training")
+    ],
+    [
+        InlineKeyboardButton(text="Назад 🔙", callback_data="qwestion/answer"),
+        InlineKeyboardButton(text="В главное меню ↩️", callback_data="back_main_menu")
+    ]
+])
+
+
+back_or_main_menu_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(text="Назад 🔙", callback_data="meal_question"),
+        InlineKeyboardButton(text="В главное меню ↩️", callback_data="back_main_menu")
+    ]
+])
+
+
+pay_problem_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(text="Связаться📞", callback_data="problem_pay", url="https://t.me/IF_PROEKT_13"),
+        InlineKeyboardButton(text="В главное меню ↩️", callback_data="back_main_menu")
+    ]
+])

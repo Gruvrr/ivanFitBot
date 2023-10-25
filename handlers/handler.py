@@ -1,3 +1,5 @@
+import time
+
 from aiogram import Bot, Router
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
@@ -10,21 +12,24 @@ from typing import Union
 router = Router()
 
 
-@router.callback_query(lambda c: c.data == "next3")
-@router.callback_query(lambda c: c.data == "back_main_menu")
 @router.message(CommandStart())
-async def get_start(message: Message):
+async def get_start(event: Union[Message, CallbackQuery]):
+    if isinstance(event, Message):
+        message = event
+    else:
+        message = event.message
     conn = connect()
     try:
         with conn.cursor() as cursor:
             cursor.execute(f"SELECT telegram_user_id, subscription_days from users WHERE telegram_user_id = {message.from_user.id}")
             result = cursor.fetchone()
+            time.sleep(1)
             if not result:
                 print("Начало выполнения функции get_start")
                 await message.answer(text="Для продолжения прими пользовательское соглашение и публичную оферту ",
                                      reply_markup=inline.accept_button)
             else:
-                user_id, subscription_days = result  # Распаковываем кортеж
+                user_id, subscription_days = result
 
                 if subscription_days != 0:
                     await main_manu_sub(message, subscription_days)
@@ -37,7 +42,7 @@ async def get_start(message: Message):
         print("[INFO] Postgresql connection close")
 
 
-@router.callback_query(lambda c: c.data == "accept" or c.data == "want_pay")
+@router.callback_query(lambda c: c.data == "accept" or c.data == "want_pay" or c.data == "about")
 async def hello_msg(callback_query: CallbackQuery, bot: Bot, state: FSMContext):
     conn = connect()
     try:
@@ -48,7 +53,7 @@ async def hello_msg(callback_query: CallbackQuery, bot: Bot, state: FSMContext):
                 await handlers.questionary.new_profile(callback_query.message, state)
                 await callback_query.answer()
             else:
-                await callback_query.message.answer(f"Подписка на Проект 13 включает в себя:"
+                await callback_query.message.answer(f"Подписка на Проект 13 включает в себя:\n"
                                        f"▪️12 тренировок по 30-45 минут\n\n"
                                        f"▪️Меню на 4 недели\n"
                                        f"▪️Чат с единомышленниками\n" 
@@ -74,3 +79,5 @@ async def start_msg(message: Message):
                          f"Рад Видеть тебя на проекте 13\n"
                          f"Поздравляю, ты уже сделал первый шаг на пути к здоровому и подтянутому телу! \n"
                          f"Теперь вместе со мной ты будешь уверенно двигаться вперёд, становясь с каждым днём активнее, выносливее и сильнее 💪")
+
+

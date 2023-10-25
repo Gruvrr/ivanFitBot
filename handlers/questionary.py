@@ -3,9 +3,9 @@ import psycopg2
 from aiogram import F, Router
 from aiogram.types import Message, ReplyKeyboardRemove, CallbackQuery
 from aiogram.fsm.context import FSMContext
-
+from aiogram import Bot
 import handlers.main_menu
-from utils.states import Form
+from utils.states import Form, Question
 import re
 from dotenv import load_dotenv
 from os import getenv
@@ -18,11 +18,29 @@ user = getenv("MYBOTUSER")
 password = getenv("MYPASSWORD")
 database = getenv("MYNAMEDB")
 router = Router()
+admin_id = getenv("ADMIN_ID")
+token = getenv("TOKEN")
+bot = Bot(token=token)
 PHONE_REGEX = r'(?:(?:\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9])\s*(?:[.-]\s*)?)?(?:\(?([0-9][0-9][0-9])\)?\s*(?:[.-]\s*)?)?([0-9][0-9][0-9])\s*(?:[.-]\s*)?([0-9][0-9][0-9][0-9]))'
 
 
+@router.callback_query(lambda c: c.data == "quick_answer")
+async def send_question(callback: CallbackQuery, state: FSMContext):
+    await state.set_state(Question.text)
+    await callback.message.answer(text=f"✍️Напишите свой вопрос и отправьте\n\n"
+                              f"Желательно, что бы он был короткий, но точный и содержал ключевые слова")
+
+
+@router.message(Question.text)
+async def res_question(message: Message, state: FSMContext):
+    await state.update_data(text=message.text)
+    data = await state.get_data()
+    msg = (f"Пользователь с таким nickname - @{message.from_user.username}, задает вопрос:\n"
+           f"{data.get('text')}")
+    await bot.send_message(chat_id=admin_id, text=msg)
+
+
 async def new_profile(message: Message, state: FSMContext):
-    print("All good")
     await state.set_state(Form.age)
     await message.answer(text="Укажите ваш пол", reply_markup=gender_keyboard)
 

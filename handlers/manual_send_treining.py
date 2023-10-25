@@ -80,9 +80,6 @@ async def send_training_link_now(message: Message):
         close(conn)
 
 
-
-
-
 async def send_training_link_first_time(message: Message):
     print("Сюда пришел")
     conn = connect()

@@ -7,9 +7,9 @@ from aiogram.filters import Command
 from os import getenv
 from dotenv import load_dotenv
 from keyboards import inline
-from handlers import handler, questionary, pay, promocode, main_menu, add_links, send_treining, manual_send_treining, add_nutrition, meal_handler, meal_callback
+from handlers import handler, questionary, pay, promocode, main_menu, add_links, send_treining, manual_send_treining, add_nutrition, meal_handler, meal_callback, help
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
+from handlers.subscription_manager import manage_subscriptions
 
 
 load_dotenv()
@@ -30,9 +30,12 @@ async def stop_bot(bot: Bot):
 
 
 async def start():
+
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s - [%(levelname)s] = %(name)s - "
-                               "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s")
+                               "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s",
+                        handlers=[logging.FileHandler("bot_logs.log", 'a', 'utf-8'),
+                                  logging.StreamHandler()])
     bot = Bot(token=token, parse_mode='HTML')
     dp.message.register(handler.get_start, Command("start"))
     dp.message.register(manual_send_treining.send_training_link_now, Command("send_training"))
@@ -45,11 +48,13 @@ async def start():
                                 add_nutrition.router,
                                 inline.router,
                                 meal_handler.router,
-                                meal_callback.router)
+                                meal_callback.router,
+                                help.router)
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
     scheduler = AsyncIOScheduler()
     scheduler.add_job(send_treining.send_training_links, args=[bot], trigger='cron', day_of_week='mon,wed,fri', hour=6)
+    scheduler.add_job(manage_subscriptions, args=[bot], trigger='cron', hour=10)
     scheduler.start()
     try:
         await dp.start_polling(bot)

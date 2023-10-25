@@ -19,3 +19,7 @@ class Link(StatesGroup):
 class Meal(StatesGroup):
     name = State()
     description = State()
+
+
+class Question(StatesGroup):
+    text = State()
