@@ -14,12 +14,24 @@ accept_button = InlineKeyboardMarkup(inline_keyboard=[
 )
 
 
+back_in_main_menu = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(
+            text="Назад, в главное меню",
+            callback_data="command: start"
+        )
+    ]
+],
+    resize_keyboard=True
+)
+
+
 gender_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [
-        InlineKeyboardButton(text="Как к парню", callback_data="male"),
+        InlineKeyboardButton(text="Мужской", callback_data="male"),
     ],
     [
-        InlineKeyboardButton(text="Как к девушке", callback_data="female")
+        InlineKeyboardButton(text="Женский", callback_data="female")
     ]
 ],
     resize_keyboard=True
@@ -75,6 +87,8 @@ success_trening_keyboard = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 
+
+
 async def generate_meal_keyboard():
     conn = connect()
     cursor = conn.cursor()
@@ -85,9 +99,10 @@ async def generate_meal_keyboard():
 
         # Собираем все кнопки в список
         buttons = [InlineKeyboardButton(text=meal[0], callback_data=f"meal:{meal[0]}") for meal in meals]
+        back_button = [InlineKeyboardButton(text="Вернуться в главное меню", callback_data="back_main_menu")]
 
         # Создаем InlineKeyboardMarkup, передавая кнопки как список списков
-        keyboard_markup = InlineKeyboardMarkup(inline_keyboard=[buttons])
+        keyboard_markup = InlineKeyboardMarkup(inline_keyboard=[buttons, back_button])
 
         return keyboard_markup
 
@@ -99,3 +114,37 @@ async def generate_meal_keyboard():
         cursor.close()
         conn.close()
 
+next_button = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(
+            text="Далее",
+            callback_data="next1"
+        )
+    ]
+],
+    resize_keyboard=True
+)
+
+
+next_button2 = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(
+            text="Далее",
+            callback_data="next2"
+        )
+    ]
+],
+    resize_keyboard=True
+)
+
+
+next_button3 = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(
+            text="Далее",
+            callback_data="next3"
+        )
+    ]
+],
+    resize_keyboard=True
+)

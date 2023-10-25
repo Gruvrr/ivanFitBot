@@ -2,6 +2,7 @@ from aiogram.types import Message, CallbackQuery
 from keyboards.inline import main_menu_keyboard
 from aiogram import Router
 from keyboards.inline import success_trening_keyboard
+from typing import Union
 router = Router()
 
 
@@ -17,6 +18,10 @@ async def main_menu_callback(callback: CallbackQuery):
     await callback.answer()
 
 
-async def main_manu_sub(message: Message, sub):
+async def main_manu_sub(event: Union[Message, CallbackQuery], sub: int):
+    if isinstance(event, Message):
+        message = event
+    else:
+        message = event.message
     await message.answer(f"У тебя есть действующая подписка.\n"
                          f"До конца подписки осталось {sub}", reply_markup=success_trening_keyboard)

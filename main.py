@@ -7,7 +7,7 @@ from aiogram.filters import Command
 from os import getenv
 from dotenv import load_dotenv
 from keyboards import inline
-from handlers import handler, questionary, pay, promocode, main_menu, add_links, send_treining, manual_send_treining, add_nutrition, meal_handler
+from handlers import handler, questionary, pay, promocode, main_menu, add_links, send_treining, manual_send_treining, add_nutrition, meal_handler, meal_callback
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 
@@ -44,7 +44,8 @@ async def start():
                                 add_links.router,
                                 add_nutrition.router,
                                 inline.router,
-                                meal_handler.router)
+                                meal_handler.router,
+                                meal_callback.router)
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
     scheduler = AsyncIOScheduler()

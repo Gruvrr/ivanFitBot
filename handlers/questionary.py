@@ -24,7 +24,7 @@ PHONE_REGEX = r'(?:(?:\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9])\s*(?:[.-]\s*)?)?(?:\
 async def new_profile(message: Message, state: FSMContext):
     print("All good")
     await state.set_state(Form.age)
-    await message.answer(text="Как вы бы предпочли, чтобы к вам обращались?", reply_markup=gender_keyboard)
+    await message.answer(text="Укажите ваш пол", reply_markup=gender_keyboard)
 
 
 @router.callback_query(F.data.casefold().in_(["male", "female"]))

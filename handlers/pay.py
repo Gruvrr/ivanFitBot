@@ -1,9 +1,10 @@
 from aiogram.types import CallbackQuery, LabeledPrice, PreCheckoutQuery, Message
 from aiogram import Router, Bot
 import time
-from handlers.handler import start_msg
 from utils.db import connect, close
 from aiogram import F
+from handlers.after_pay import send_messages_after_pay
+
 
 router = Router()
 
@@ -22,6 +23,7 @@ def update_user_subscription(user_id):
 
     # Устанавливаем значение subscription_days на 28
     cursor.execute("UPDATE users SET subscription_days = 28 WHERE telegram_user_id = %s", (user_id,))
+    cursor.execute("UPDATE users SET is_subscription_active = True WHERE telegram_user_id = %s", (user_id,))
 
     conn.commit()
     cursor.close()
@@ -129,5 +131,4 @@ async def successful_payment(message: Message):
     msg = (f"Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}."
            f"\r\nОплата прошла успешно!")
     await message.answer(msg)
-    time.sleep(3)
-    await start_msg(message)
+    await send_messages_after_pay(message)

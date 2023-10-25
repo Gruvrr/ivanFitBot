@@ -6,8 +6,12 @@ import handlers.questionary
 from keyboards import inline
 from utils.db import connect, close
 from handlers.main_menu import main_menu, main_manu_sub
+from typing import Union
 router = Router()
 
+
+@router.callback_query(lambda c: c.data == "next3")
+@router.callback_query(lambda c: c.data == "back_main_menu")
 @router.message(CommandStart())
 async def get_start(message: Message):
     conn = connect()
