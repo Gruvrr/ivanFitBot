@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from keyboards import inline
 from handlers import handler, questionary, pay, promocode, main_menu, add_links, send_treining, manual_send_treining, add_nutrition, meal_handler, meal_callback, help
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from handlers.subscription_manager import manage_subscriptions
+from handlers.subscription_manager import manage_subscriptions, manage_count_nutrition
 
 
 load_dotenv()
@@ -53,6 +53,7 @@ async def start():
     scheduler = AsyncIOScheduler()
     scheduler.add_job(send_treining.send_training_links, args=[bot], trigger='cron', day_of_week='mon,wed,fri', hour=6)
     scheduler.add_job(manage_subscriptions, args=[bot], trigger='cron', day_of_week='mon,tue,wed,thu,fri,sat,sun', hour=12)
+    scheduler.add_job(manage_count_nutrition, args=[bot], trigger='cron', day_of_week='mon,tue,wed,thu,fri,sat,sun', hour=13)
     scheduler.start()
     try:
         await dp.start_polling(bot)

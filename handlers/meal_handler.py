@@ -51,49 +51,49 @@ async def send_breakfast(message: Message):
         close(conn)
 
 
-@router.callback_query(lambda c: c.data == "next1")
-async def send_dinner(callback: CallbackQuery):
-    meal_name = "Обед"
-    conn = connect()
-    cursor = conn.cursor()
-    keyboard = next_button2
-
-    try:
-        cursor.execute("SELECT meal_description FROM meals WHERE meal_name = %s;", (meal_name,))
-        meal_description = cursor.fetchone()
-        if meal_description:
-            await callback.message.answer(f"{meal_description[0]}", reply_markup=keyboard)
-        else:
-            await callback.message.answer(f"Описание для {meal_name} не найдено.")
-
-    except Exception as e:
-        print(f"Error: {e}")
-        await callback.message.answer("Произошла ошибка при извлечении данных.")
-
-    finally:
-        cursor.close()
-        close(conn)
-
-
-@router.callback_query(lambda c: c.data == "next2")
-async def send_supper(callback: CallbackQuery):
-    meal_name = "Ужин"
-    conn = connect()
-    cursor = conn.cursor()
-    keyboard = next_button3
-
-    try:
-        cursor.execute("SELECT meal_description FROM meals WHERE meal_name = %s;", (meal_name,))
-        meal_description = cursor.fetchone()
-        if meal_description:
-            await callback.message.answer(f"{meal_description[0]}", reply_markup=keyboard)
-        else:
-            await callback.message.answer(f"Описание для {meal_name} не найдено.")
-
-    except Exception as e:
-        print(f"Error: {e}")
-        await callback.message.answer("Произошла ошибка при извлечении данных.")
-
-    finally:
-        cursor.close()
-        close(conn)
+# @router.callback_query(lambda c: c.data == "next1")
+# async def send_dinner(callback: CallbackQuery):
+#     meal_name = "Обед"
+#     conn = connect()
+#     cursor = conn.cursor()
+#     keyboard = next_button2
+#
+#     try:
+#         cursor.execute("SELECT meal_description FROM meals WHERE meal_name = %s;", (meal_name,))
+#         meal_description = cursor.fetchone()
+#         if meal_description:
+#             await callback.message.answer(f"{meal_description[0]}", reply_markup=keyboard)
+#         else:
+#             await callback.message.answer(f"Описание для {meal_name} не найдено.")
+#
+#     except Exception as e:
+#         print(f"Error: {e}")
+#         await callback.message.answer("Произошла ошибка при извлечении данных.")
+#
+#     finally:
+#         cursor.close()
+#         close(conn)
+#
+#
+# @router.callback_query(lambda c: c.data == "next2")
+# async def send_supper(callback: CallbackQuery):
+#     meal_name = "Ужин"
+#     conn = connect()
+#     cursor = conn.cursor()
+#     keyboard = next_button3
+#
+#     try:
+#         cursor.execute("SELECT meal_description FROM meals WHERE meal_name = %s;", (meal_name,))
+#         meal_description = cursor.fetchone()
+#         if meal_description:
+#             await callback.message.answer(f"{meal_description[0]}", reply_markup=keyboard)
+#         else:
+#             await callback.message.answer(f"Описание для {meal_name} не найдено.")
+#
+#     except Exception as e:
+#         print(f"Error: {e}")
+#         await callback.message.answer("Произошла ошибка при извлечении данных.")
+#
+#     finally:
+#         cursor.close()
+#         close(conn)
