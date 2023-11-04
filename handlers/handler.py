@@ -1,15 +1,34 @@
+import logging
 import time
-
 from aiogram import Bot, Router
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, ReplyKeyboardMarkup, KeyboardButton
 import handlers.questionary
 from keyboards import inline
 from utils.db import connect, close
 from handlers.main_menu import main_menu, main_manu_sub
 from typing import Union
+from os import getenv
+from dotenv import load_dotenv
+
+load_dotenv()
 router = Router()
+admin_id = getenv("ADMIN_ID")
+
+
+@router.message(Command('menu'))
+async def send_menu(message: Message):
+    if str(message.from_user.id) == admin_id:
+        buttons = [
+            [KeyboardButton(text=command) for command in ["/add_link", "/add_meal"]],
+            [KeyboardButton(text="/create_user")]
+        ]
+        markup = ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True)
+        await message.answer("Выберите команду:", reply_markup=markup)
+    else:
+        await message.answer("У вас нет доступа к этому меню.")
+
 
 
 @router.message(CommandStart())
@@ -22,6 +41,7 @@ async def get_start(event: Union[Message, CallbackQuery]):
     try:
         with conn.cursor() as cursor:
             cursor.execute(f"SELECT telegram_user_id, subscription_days from users WHERE telegram_user_id = {message.from_user.id}")
+            logging.info("Connected to the database")
             result = cursor.fetchone()
             time.sleep(1)
             if not result:
@@ -54,10 +74,9 @@ async def hello_msg(callback_query: CallbackQuery, bot: Bot, state: FSMContext):
                 await callback_query.answer()
             else:
                 await callback_query.message.answer(f"Подписка на Проект 13 включает в себя:\n"
-                                       f"▪️12 тренировок по 30-45 минут\n\n"
+                                       f"▪️12 тренировок по 25-45 минут\n\n"
                                        f"▪️Меню на 4 недели\n"
                                        f"▪️Чат с единомышленниками\n" 
-                                       f"▪️Прямые эфиры\n" 
                                        f"▪️Поддержка 24/7\n\n"
                                        f"После оплаты возможна задержка до 20 минут", reply_markup=inline.subscribe_keyboard
                                        )
@@ -76,8 +95,8 @@ async def start_msg(message: Message):
         first_name = cursor.fetchone()[0]
         print(first_name)
     await message.answer(f"Привет, {first_name}\n"
-                         f"Рад Видеть тебя на проекте 13\n"
+                         f'Рад Видеть тебя на "Проекте 13\n'
                          f"Поздравляю, ты уже сделал первый шаг на пути к здоровому и подтянутому телу! \n"
-                         f"Теперь вместе со мной ты будешь уверенно двигаться вперёд, становясь с каждым днём активнее, выносливее и сильнее 💪")
+                         f"Теперь мы вместе будем уверенно двигаться вперёд, становясь с каждым днём красивее, активнее и выносливее💪")
 
 

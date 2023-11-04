@@ -38,7 +38,7 @@ async def main_meny_subscription_days(callback: CallbackQuery) -> int:
         cursor.execute("SELECT subscription_days FROM users WHERE telegram_user_id = %s", (callback.from_user.id,))
         result = cursor.fetchone()
         await callback.message.answer(text=f"У тебя есть действующая подписка.\n"
-                                  f"До конца подписки осталось {result[0]}", reply_markup=success_trening_keyboard)
+                                  f"Абонемент закончится через {result[0]} дней", reply_markup=success_trening_keyboard)
     except Exception as e:
         print(f"[ERROR] {e}")
         logging.error(f"Error: {e}")

@@ -13,8 +13,9 @@ async def send_training_links(bot: Bot):
         day_of_week = today.weekday()
 
         if day_of_week in [0, 2, 4]:  # Понедельник, Среда, Пятница
-            cursor.execute("SELECT id FROM users WHERE is_subscription_active = TRUE")
+            cursor.execute("SELECT telegram_user_id FROM users WHERE is_subscription_active = TRUE")
             active_users = cursor.fetchall()
+            print(active_users)
 
             for user in active_users:
                 user_id = user[0]
@@ -48,10 +49,15 @@ async def send_training_links(bot: Bot):
                     """, (last_sent_training_number,))
 
                 next_training = cursor.fetchone()
+                print(f"Это тренировка для отправки - {next_training}", )
 
                 if next_training:
                     training_number, training_url = next_training
+                    print(f"Сейчас отправится ссылка")
+
+                    print(user_id)
                     await bot.send_message(chat_id=user_id, text=f'Ссылка на вашу тренировку: {training_url}')
+                    print("Ссылка отправлена")
 
                     cursor.execute("""
                         INSERT INTO user_trainings (user_id, training_number, is_sent, sent_date)
@@ -60,6 +66,10 @@ async def send_training_links(bot: Bot):
                         DO UPDATE SET is_sent = TRUE, sent_date = %s;
                     """, (user_id, training_number, today, today))
                     conn.commit()
+                else:
+                    await bot.send_message(chat_id=user_id,
+                                           text='На данный момент, вы прошли все тренировки. '
+                                                'Новые тренировки появятся совсем скоро!')
 
     except Exception as e:
         logging.error(f"Error: {e}")

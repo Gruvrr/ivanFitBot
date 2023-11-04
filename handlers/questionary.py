@@ -1,4 +1,6 @@
 import time
+import datetime
+from aiogram.filters import Command
 import psycopg2
 from aiogram import F, Router
 from aiogram.types import Message, ReplyKeyboardRemove, CallbackQuery
@@ -40,8 +42,8 @@ async def res_question(message: Message, state: FSMContext):
     await bot.send_message(chat_id=admin_id, text=msg)
 
 
+@router.message(Command("create_user"))
 async def new_profile(message: Message, state: FSMContext):
-    await state.set_state(Form.age)
     await message.answer(text="Укажите ваш пол", reply_markup=gender_keyboard)
 
 
@@ -65,22 +67,27 @@ async def say_last_name(message: Message, state: FSMContext):
 @router.message(Form.last_name)
 async def birth_day(message: Message, state: FSMContext):
     await state.update_data(last_name=message.text)
-    await state.set_state(Form.age)
-    await message.answer(text="Введите ваш возраст")
+    await state.set_state(Form.birth_date)
+    await message.answer(text="Введите вашу дату рождения в формате ДД.ММ.ГГГГ")
 
 
-@router.message(Form.age)
+@router.message(Form.birth_date)
 async def phone_number(message: Message, state: FSMContext):
-    if message.text.isdigit():
-        age = int(message.text)
-        if 0 <= age <= 95:
-            await state.update_data(age=message.text)
-            await state.set_state(Form.phone_number)
-            await message.answer(text="Введите ваш номер телефона")
-        else:
-            await message.answer("Введите реалистичный возраст.")
+    text = message.text
+    try:
+        birth_date = datetime.datetime.strptime(text, '%d.%m.%Y')
+    except ValueError:
+        await message.reply("Некорректный формат даты. Пожалуйста, попробуйте еще раз.")
+        return
+
+    today = datetime.datetime.today()
+    age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+    if 0 <= age <= 95:
+        await state.update_data(birth_date=birth_date)
+        await state.set_state(Form.phone_number)
+        await message.answer(text="Введите ваш номер телефона")
     else:
-        await message.answer("Возраст должен быть указан только цифрами.")
+        await message.answer("Введите реалистичную дату рождения.")
 
 
 @router.message(Form.phone_number)
@@ -119,12 +126,12 @@ async def res(message: Message, state: FSMContext):
         )
         with connection.cursor() as cursor:
             query = """
-            INSERT INTO users (telegram_user_id, gender, first_name, last_name, age, phone_number, email, city, subscription_days, subscription_purchases)
+            INSERT INTO users (telegram_user_id, gender, first_name, last_name, birth_date, phone_number, email, city, subscription_days, subscription_purchases)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             values = (
                 message.from_user.id, data.get('gender'), data.get('first_name'), data.get('last_name'),
-                data.get('age'), data.get('phone_number'), data.get('email'), data.get('city'), 0, 0
+                data.get('birth_date'), data.get('phone_number'), data.get('email'), data.get('city'), 0, 0
             )
             cursor.execute(query, values)
             connection.commit()

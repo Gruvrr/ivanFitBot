@@ -152,7 +152,7 @@ next_button3 = InlineKeyboardMarkup(inline_keyboard=[
 
 help_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [
-        InlineKeyboardButton(text="Общение 🗣", callback_data="speak"),
+        InlineKeyboardButton(text="Общение 🗣", url="https://t.me/+TgAj34afQ0lkOTIy"),
         InlineKeyboardButton(text="Вопрос/Ответ 🆘", callback_data="qwestion/answer")
     ],
     [

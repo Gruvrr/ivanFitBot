@@ -34,13 +34,26 @@ async def res(message: Message, state: FSMContext):
     conn = connect()
     try:
         with conn.cursor() as cursor:
+            # Добавление новой ссылки
             query = """
-            INSERT INTO training_links (training_number, training_url, status) VALUES (%s, %s, 'active');
-            """  # добавлено поле status со значением 'active'
-            values = (
-                data.get('number'), data.get('link')
-            )
+            INSERT INTO training_links (training_url, training_number, status, date_added)
+            VALUES (%s, %s, 'active', NOW());
+            """
+            values = (data.get('link'), data.get('number'))
             cursor.execute(query, values)
+            conn.commit()
+
+            # Проверка количества ссылок и обновление статуса 25-й ссылки при необходимости
+            query = """
+            WITH ranked_links AS (
+                SELECT id, ROW_NUMBER() OVER (ORDER BY date_added DESC) as rn
+                FROM training_links
+            )
+            UPDATE training_links
+            SET status = 'notactive'
+            WHERE id IN (SELECT id FROM ranked_links WHERE rn = 25);
+            """
+            cursor.execute(query)
             conn.commit()
 
     except Exception as e:
@@ -51,6 +64,7 @@ async def res(message: Message, state: FSMContext):
 
     await state.clear()
     await message.answer("Ссылка успешно добавлена✅")
+
 
 
 @router.message(Command("get_links"))

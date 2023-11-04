@@ -1,8 +1,6 @@
 import asyncio
 import logging
-from aiogram.enums import ParseMode
 from aiogram import Bot, Dispatcher
-from aiogram.types import Message
 from aiogram.filters import Command
 from os import getenv
 from dotenv import load_dotenv
@@ -53,8 +51,8 @@ async def start():
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(send_treining.send_training_links, args=[bot], trigger='cron', day_of_week='mon,wed,fri', hour=6)
-    scheduler.add_job(manage_subscriptions, args=[bot], trigger='cron', hour=10)
+    scheduler.add_job(send_treining.send_training_links, args=[bot], trigger='cron', day_of_week='mon,wed,fri,sat', hour=7, minute=38)
+    scheduler.add_job(manage_subscriptions, args=[bot], trigger='cron', day_of_week='mon,tue,wed,thu,fri,sat,sun', hour=12, minute=7)
     scheduler.start()
     try:
         await dp.start_polling(bot)

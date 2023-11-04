@@ -52,7 +52,7 @@ async def send_breakfast(message: Message):
 
 
 @router.callback_query(lambda c: c.data == "next1")
-async def send_dinner(callback:CallbackQuery):
+async def send_dinner(callback: CallbackQuery):
     meal_name = "Обед"
     conn = connect()
     cursor = conn.cursor()

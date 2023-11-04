@@ -10,8 +10,6 @@ user = getenv("MYBOTUSER")
 password = getenv("MYPASSWORD")
 database = getenv("MYNAMEDB")
 
-
-# функция для создания подключения к базе данных
 def connect():
     return psycopg2.connect(
         host=host,
@@ -21,13 +19,11 @@ def connect():
     )
 
 
-# функция для закрытия подключения к базе данных
 def close(conn):
     if conn:
         conn.close()
 
 
-# функция для добавления записи о платеже
 def add_payment(telegram_user_id, unique_payload, amount, currency):
     conn = connect()
     cursor = conn.cursor()
@@ -42,7 +38,6 @@ def add_payment(telegram_user_id, unique_payload, amount, currency):
         close(conn)
 
 
-# функция для обновления статуса платежа
 def update_payment_status(unique_payload, status, error_message=None):
     conn = connect()
     cursor = conn.cursor()
