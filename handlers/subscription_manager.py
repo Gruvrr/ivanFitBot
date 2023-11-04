@@ -1,6 +1,8 @@
 import logging
 from aiogram import Bot
 from utils.db import connect, close
+from keyboards.inline import pay_button
+
 
 async def manage_subscriptions(bot: Bot):
     conn = connect()
@@ -28,7 +30,7 @@ async def manage_subscriptions(bot: Bot):
                 )
 
             if new_subscription_days == 2:
-                await bot.send_message(telegram_user_id, "Ваша подписка закончится через 2 дня.")
+                await bot.send_message(telegram_user_id, "Ваша подписка закончится через 2 дня.", reply_markup=pay_button)
 
         conn.commit()
 

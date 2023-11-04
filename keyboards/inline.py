@@ -50,6 +50,16 @@ subscribe_keyboard = InlineKeyboardMarkup(inline_keyboard=[
 ]
 )
 
+
+pay_button: InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(
+            text="Оплатить 💵",
+            callback_data="want_pay"
+        )
+    ]
+])
+
 main_menu_keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
