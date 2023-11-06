@@ -137,12 +137,12 @@ async def res(message: Message, state: FSMContext):
         )
         with connection.cursor() as cursor:
             query = """
-            INSERT INTO users (telegram_user_id, gender, first_name, last_name, birth_date, phone_number, email, city, subscription_days, subscription_purchases)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO users (telegram_user_id, gender, first_name, last_name, birth_date, phone_number, email, city, subscription_days, subscription_purchases, is_subscription_active )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             values = (
                 data.get('telegram_user_id'), data.get('gender'), data.get('first_name'), data.get('last_name'),
-                data.get('birth_date'), data.get('phone_number'), data.get('email'), data.get('city'), data.get('count_active_days'), data.get('count_subscription')
+                data.get('birth_date'), data.get('phone_number'), data.get('email'), data.get('city'), data.get('count_active_days'), data.get('count_subscription'), "True"
             )
             cursor.execute(query, values)
 
