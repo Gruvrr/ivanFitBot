@@ -26,6 +26,17 @@ back_in_main_menu = InlineKeyboardMarkup(inline_keyboard=[
 )
 
 
+user_gender_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(text="Мужской", callback_data="male1"),
+    ],
+    [
+        InlineKeyboardButton(text="Женский", callback_data="female1")
+    ]
+],
+    resize_keyboard=True
+)
+
 gender_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(text="Мужской", callback_data="male"),
@@ -162,7 +173,7 @@ next_button3 = InlineKeyboardMarkup(inline_keyboard=[
 
 help_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [
-        InlineKeyboardButton(text="Общение 🗣", url="https://t.me/+TgAj34afQ0lkOTIy"),
+        #InlineKeyboardButton(text="Общение 🗣", url="https://t.me/+TgAj34afQ0lkOTIy"),
         InlineKeyboardButton(text="Вопрос/Ответ 🆘", callback_data="qwestion/answer")
     ],
     [

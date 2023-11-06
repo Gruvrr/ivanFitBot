@@ -42,7 +42,6 @@ async def res_question(message: Message, state: FSMContext):
     await bot.send_message(chat_id=admin_id, text=msg)
 
 
-@router.message(Command("create_user"))
 async def new_profile(message: Message, state: FSMContext):
     await message.answer(text="Укажите ваш пол", reply_markup=gender_keyboard)
 

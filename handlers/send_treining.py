@@ -2,11 +2,17 @@ import datetime
 from aiogram import Bot
 from utils.db import connect, close
 import logging
+from dotenv import load_dotenv
+from os import getenv
+
+load_dotenv()
+anna_id = getenv('ANNA_ID')
 
 
 async def send_training_links(bot: Bot):
     conn = connect()
     cursor = conn.cursor()
+    count = 0
 
     try:
         today = datetime.datetime.now()
@@ -18,6 +24,7 @@ async def send_training_links(bot: Bot):
             print(active_users)
 
             for user in active_users:
+                count += 1
                 user_id = user[0]
 
                 # Проверяем, были ли уже отправлены какие-либо тренировки
@@ -70,6 +77,7 @@ async def send_training_links(bot: Bot):
                     await bot.send_message(chat_id=user_id,
                                            text='На данный момент, вы прошли все тренировки. '
                                                 'Новые тренировки появятся совсем скоро!')
+            #await bot.send_message(chat_id=anna_id, text=f"Сегодня тренировки получили - {count} человек.")
 
     except Exception as e:
         logging.error(f"Error: {e}")

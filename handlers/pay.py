@@ -1,11 +1,16 @@
+import json
+
 from aiogram.types import CallbackQuery, LabeledPrice, PreCheckoutQuery, Message
 from aiogram import Router, Bot
 import time
 from utils.db import connect, close
 from aiogram import F
 from handlers.after_pay import send_messages_after_pay
+from dotenv import load_dotenv
+from os import getenv
 
-
+load_dotenv()
+pt = getenv("PROVIDER_TOKEN")
 router = Router()
 
 
@@ -65,6 +70,7 @@ def get_subscription_days(user_id):
 @router.callback_query(lambda c: c.data == "pay")
 async def order(callback: CallbackQuery, bot: Bot):
     user_id = callback.from_user.id
+    print(type(pt))
 
     try:
         subscription_days = get_subscription_days(user_id)
@@ -76,20 +82,36 @@ async def order(callback: CallbackQuery, bot: Bot):
         await bot.send_message(callback.from_user.id, "Произошла ошибка при проверке вашей подписки. Пожалуйста, попробуйте позже.")
         return
     unique_payload = generate_payload(user_id)
-    amount = 77700  # копейки
+    amount = 10000  # копейки
     currency = "RUB"
     add_payment_to_db(user_id, unique_payload, amount, currency)
     try:
+        provider_data = {
+            "receipt": {
+                "items": [{
+                    "description": "Подписка на тренировки",
+                    "quantity": "1.00",
+                    "amount": {
+                        "value": "100.00",  # Укажите здесь цену за единицу товара или услуги
+                        "currency": "RUB"
+                    },
+                    "vat_code": 6  # НДС. Укажите актуальную ставку НДС, если она применима
+                }],
+                "customer": {
+                    "email": "mail@mail.ru"  # Здесь должен быть email покупателя
+                }
+            }
+        }
         await bot.send_invoice(
             chat_id=callback.from_user.id,
             title="Подписка на тренировки",
-            description="Тестовые платежи на покупку подписки тренировок",
-            provider_token="381764678:TEST:69512",
+            description="Проверка работоспособности платежей - 1 рубль",
+            provider_token=pt,
             currency="rub",
             prices=[
                 LabeledPrice(
                     label="Цена",
-                    amount=77700
+                    amount=10000
                 )
             ],
             need_name=True,
@@ -102,7 +124,9 @@ async def order(callback: CallbackQuery, bot: Bot):
             protect_content=True,
             reply_markup=None,
             request_timeout=8,
+            provider_data=json.dumps(provider_data),
             payload=unique_payload
+
         )
     except Exception as _ex:
         print("ERROR EXCEPTION ", _ex)
