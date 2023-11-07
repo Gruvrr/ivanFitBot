@@ -77,7 +77,7 @@ async def send_training_links(bot: Bot):
                     await bot.send_message(chat_id=user_id,
                                            text='На данный момент, вы прошли все тренировки. '
                                                 'Новые тренировки появятся совсем скоро!')
-            #await bot.send_message(chat_id=anna_id, text=f"Сегодня тренировки получили - {count} человек.")
+            await bot.send_message(chat_id=anna_id, text=f"Сегодня тренировки получили - {count} человек.")
 
     except Exception as e:
         logging.error(f"Error: {e}")

@@ -10,6 +10,7 @@ router = Router
 
 
 async def send_messages_after_pay(message: Message):
+    user_id: int = message.from_user.id
     time.sleep(3)
     await start_msg(message)
     time.sleep(4)
@@ -20,7 +21,7 @@ async def send_messages_after_pay(message: Message):
                          f"▪️Прямые эфиры \n"
                          f"▪️Поддержка 24/7")
     time.sleep(5)
-    await send_training_link_first_time(message)
+    await send_training_link_first_time(message, user_id)
     time.sleep(5)
     await message.answer(f"☝🏻Питание - это  50% успеха! \n"
                          f"Поэтому четко соблюдайте рацион и получите результат, о котором даже не мечтали!\n"

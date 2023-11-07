@@ -45,7 +45,9 @@ async def get_start(event: Union[Message, CallbackQuery]):
             time.sleep(1)
             if not result:
                 print("Начало выполнения функции get_start")
-                await message.answer(text="Для продолжения прими пользовательское соглашение и публичную оферту ",
+                await message.answer(
+                    text="Для продолжения прими <a href='https://docs.google.com/document/d/1BICRZ12uM-ZGyCHpu1bCtx5q4pkAHBbM/edit?usp=sharing&ouid=116349165456942383445&rtpof=true&sd=true'>политику конфиденциальности</a> и <a href='https://drive.google.com/file/d/1s95OsgiqLXni3uwudW_Ts5F2-9bg_rOF/view?usp=sharing'>публичную оферту</a>",
+                    parse_mode='HTML',
                                      reply_markup=inline.accept_button)
             else:
                 user_id, subscription_days = result
@@ -72,7 +74,7 @@ async def hello_msg(callback_query: CallbackQuery, bot: Bot, state: FSMContext):
                 await handlers.questionary.new_profile(callback_query.message, state)
                 await callback_query.answer()
             else:
-                await callback_query.message.answer(f"Подписка на Проект 13 включает в себя:\n"
+                await callback_query.message.answer(f'Подписка на "Проект 13" включает в себя:\n'
                                        f"▪️12 тренировок по 25-45 минут\n"
                                        f"▪️Меню на 4 недели\n"
                                        f"▪️Чат с единомышленниками\n" 
