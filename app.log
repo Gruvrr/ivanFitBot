@@ -1,0 +1,436 @@
+aiogram.dispatcher - WARNING - Received SIGINT signal
+aiogram.dispatcher - WARNING - Received SIGINT signal
+aiogram.dispatcher - WARNING - Received SIGINT signal
+MyLogger - ERROR - Exception occurred: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Values at the moment of exception: user_id=6254452552, payload=6254452552-1699339742, amount=10000, currency=RUB
+aiogram.event - ERROR - Cause exception while process update id=976361825 by bot id=6947665258
+NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 308, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 157, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 27, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/fsm/middleware.py", line 41, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 275, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 102, in order
+    add_payment_to_db(user_id, unique_payload, amount, currency)
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Exception occurred: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Values at the moment of exception: user_id=6254452552, payload=6254452552-1699339759, amount=10000, currency=RUB
+aiogram.event - ERROR - Cause exception while process update id=976361826 by bot id=6947665258
+NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 308, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 157, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 27, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/fsm/middleware.py", line 41, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 275, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 102, in order
+    add_payment_to_db(user_id, unique_payload, amount, currency)
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Exception occurred: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Values at the moment of exception: user_id=6254452552, payload=6254452552-1699339769, amount=10000, currency=RUB
+aiogram.event - ERROR - Cause exception while process update id=976361827 by bot id=6947665258
+NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 308, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 157, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 27, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/fsm/middleware.py", line 41, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 275, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 102, in order
+    add_payment_to_db(user_id, unique_payload, amount, currency)
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Exception occurred: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Values at the moment of exception: user_id=6254452552, payload=6254452552-1699339771, amount=10000, currency=RUB
+aiogram.event - ERROR - Cause exception while process update id=976361829 by bot id=6947665258
+NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 308, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 157, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 27, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/fsm/middleware.py", line 41, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 275, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 102, in order
+    add_payment_to_db(user_id, unique_payload, amount, currency)
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Exception occurred: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Values at the moment of exception: user_id=6254452552, payload=6254452552-1699339771, amount=10000, currency=RUB
+aiogram.event - ERROR - Cause exception while process update id=976361830 by bot id=6947665258
+NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 308, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 157, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 27, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/fsm/middleware.py", line 41, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 275, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 102, in order
+    add_payment_to_db(user_id, unique_payload, amount, currency)
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Exception occurred: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Values at the moment of exception: user_id=6254452552, payload=6254452552-1699339778, amount=10000, currency=RUB
+aiogram.event - ERROR - Cause exception while process update id=976361831 by bot id=6947665258
+NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 308, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 157, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 27, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/fsm/middleware.py", line 41, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 275, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 102, in order
+    add_payment_to_db(user_id, unique_payload, amount, currency)
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Exception occurred: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Values at the moment of exception: user_id=6254452552, payload=6254452552-1699339787, amount=10000, currency=RUB
+aiogram.event - ERROR - Cause exception while process update id=976361832 by bot id=6947665258
+NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 308, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 157, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 27, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/fsm/middleware.py", line 41, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 275, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 102, in order
+    add_payment_to_db(user_id, unique_payload, amount, currency)
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Exception occurred: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Values at the moment of exception: user_id=6254452552, payload=6254452552-1699339791, amount=10000, currency=RUB
+aiogram.event - ERROR - Cause exception while process update id=976361833 by bot id=6947665258
+NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 308, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 157, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 27, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/fsm/middleware.py", line 41, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 275, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 102, in order
+    add_payment_to_db(user_id, unique_payload, amount, currency)
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Exception occurred: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+MyLogger - ERROR - Values at the moment of exception: user_id=6254452552, payload=6254452552-1699339792, amount=10000, currency=RUB
+aiogram.event - ERROR - Cause exception while process update id=976361834 by bot id=6947665258
+NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+Traceback (most recent call last):
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 308, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 157, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 27, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/fsm/middleware.py", line 41, in __call__
+    return await handler(event, data)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/dispatcher.py", line 275, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 144, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 116, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 111, in _wrapped
+    return await self._propagate_event(
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/router.py", line 136, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/telegram.py", line 120, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/home/anton/PycharmProjects/ivanFitBot/venv/lib/python3.10/site-packages/aiogram/dispatcher/event/handler.py", line 42, in call
+    return await wrapped()
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 102, in order
+    add_payment_to_db(user_id, unique_payload, amount, currency)
+  File "/home/anton/PycharmProjects/ivanFitBot/handlers/pay.py", line 49, in add_payment_to_db
+    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+psycopg2.errors.NumericValueOutOfRange: ОШИБКА:  целое вне диапазона
+
+aiogram.dispatcher - WARNING - Received SIGINT signal

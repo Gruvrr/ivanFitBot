@@ -1,5 +1,5 @@
 import json
-
+import logging
 from aiogram.types import CallbackQuery, LabeledPrice, PreCheckoutQuery, Message
 from aiogram import Router, Bot
 import time
@@ -8,6 +8,11 @@ from aiogram import F
 from handlers.after_pay import send_messages_after_pay
 from dotenv import load_dotenv
 from os import getenv
+
+
+logging.basicConfig(filename='app.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('MyLogger')
+
 
 load_dotenv()
 pt = getenv("PROVIDER_TOKEN")
@@ -38,10 +43,20 @@ def update_user_subscription(user_id):
 def add_payment_to_db(user_id, unique_payload, amount, currency="RUB"):
     conn = connect()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
-    conn.commit()
-    cursor.close()
-    close(conn)
+    try:
+        # Логируем данные, которые планируем вставить
+        logger.info(f"Attempting to insert into payments: user_id={user_id}, payload={unique_payload}, amount={amount}, currency={currency}")
+        cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
+        conn.commit()
+    except Exception as e:
+        # Логируем ошибку, если она возникает
+        logger.error(f"Exception occurred: {e}", exc_info=True)
+        logger.error(f"Values at the moment of exception: user_id={user_id}, payload={unique_payload}, amount={amount}, currency={currency}")
+        raise  # Пробрасываем исключение дальше, чтобы не потерять информацию об ошибке
+    finally:
+        cursor.close()
+        close(conn)
+
 
 
 def update_payment_status_in_db(unique_payload, status):
@@ -69,7 +84,7 @@ def get_subscription_days(user_id):
 
 @router.callback_query(lambda c: c.data == "pay")
 async def order(callback: CallbackQuery, bot: Bot):
-    user_id = callback.from_user.id
+    user_id: int = callback.from_user.id
     print(type(pt))
 
     try:
@@ -81,9 +96,9 @@ async def order(callback: CallbackQuery, bot: Bot):
         print(f"Error checking subscription: {e}")
         await bot.send_message(callback.from_user.id, "Произошла ошибка при проверке вашей подписки. Пожалуйста, попробуйте позже.")
         return
-    unique_payload = generate_payload(user_id)
-    amount = 10000  # копейки
-    currency = "RUB"
+    unique_payload: str = generate_payload(user_id)
+    amount: int = 10000  # копейки
+    currency: str = "RUB"
     add_payment_to_db(user_id, unique_payload, amount, currency)
     try:
         provider_data = {
