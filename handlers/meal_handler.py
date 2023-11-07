@@ -23,7 +23,7 @@ async def send_breakfast(message: Message):
     keyboard = next_button
 
     try:
-        cursor.execute("SELECT meal_description FROM meals WHERE meal_name = %s;", ('%' + meal_name + '%',))
+        cursor.execute("SELECT meal_description FROM meals WHERE meal_name = %s;", (meal_name,))
         meal_description = cursor.fetchone()
         if meal_description:
             await message.answer(f"Описание для {meal_name}:\n\n{meal_description[0]}", reply_markup=keyboard)
@@ -47,7 +47,7 @@ async def send_dinner(callback: CallbackQuery):
     keyboard = next_button2
 
     try:
-        cursor.execute("SELECT meal_description FROM meals WHERE meal_name = %s;", ('%' + meal_name + '%',))
+        cursor.execute("SELECT meal_description FROM meals WHERE meal_name = %s;", (meal_name,))
         meal_description = cursor.fetchone()
         if meal_description:
             await callback.message.answer(f"{meal_description[0]}", reply_markup=keyboard)
@@ -71,7 +71,7 @@ async def send_supper(callback: CallbackQuery):
     keyboard = next_button3
 
     try:
-        cursor.execute("SELECT meal_description FROM meals WHERE meal_name = %s;", ('%' + meal_name + '%',))
+        cursor.execute("SELECT meal_description FROM meals WHERE meal_name = %s;", (meal_name,))
         meal_description = cursor.fetchone()
         if meal_description:
             await callback.message.answer(f"{meal_description[0]}", reply_markup=keyboard)

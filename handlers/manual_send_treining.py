@@ -87,10 +87,10 @@ async def send_training_link_first_time(message: Message, user_id):
         today = datetime.datetime.now()
         # Проверяем, активна ли подписка у пользователя
         cursor.execute("""
-            SELECT id FROM users WHERE is_subscription_active = TRUE AND id = %s
+            SELECT id FROM users WHERE is_subscription_active = TRUE AND telegram_user_id = %s
         """, (user_id,))
         user = cursor.fetchone()
-
+        print(user)
         if user is None:
             logging.info(f"Пользователь с id {user_id} не имеет активной подписки.")
         else:
