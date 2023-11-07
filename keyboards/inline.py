@@ -18,7 +18,7 @@ back_in_main_menu = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
             text="Назад, в главное меню",
-            callback_data="command: start"
+            callback_data="back_main_menu"
         )
     ]
 ],

@@ -3,7 +3,7 @@ from aiogram import Dispatcher
 from aiogram.types import CallbackQuery
 from aiogram import Router, F
 from utils.db import connect, close
-from keyboards.inline import generate_meal_keyboard, back_in_main_menu
+from keyboards.inline import generate_meal_keyboard
 
 router = Router()
 dp = Dispatcher()

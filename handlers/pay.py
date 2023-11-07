@@ -3,6 +3,8 @@ import logging
 from aiogram.types import CallbackQuery, LabeledPrice, PreCheckoutQuery, Message
 from aiogram import Router, Bot
 import time
+
+from keyboards.inline import back_in_main_menu
 from utils.db import connect, close
 from aiogram import F
 from handlers.after_pay import send_messages_after_pay
@@ -10,8 +12,8 @@ from dotenv import load_dotenv
 from os import getenv
 
 
-logging.basicConfig(filename='app.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger('MyLogger')
+# logging.basicConfig(filename='app.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+# logger = logging.getLogger('MyLogger')
 
 
 load_dotenv()
@@ -45,13 +47,13 @@ def add_payment_to_db(user_id, unique_payload, amount, currency="RUB"):
     cursor = conn.cursor()
     try:
         # Логируем данные, которые планируем вставить
-        logger.info(f"Attempting to insert into payments: user_id={user_id}, payload={unique_payload}, amount={amount}, currency={currency}")
+        #logger.info(f"Attempting to insert into payments: user_id={user_id}, payload={unique_payload}, amount={amount}, currency={currency}")
         cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
         conn.commit()
     except Exception as e:
         # Логируем ошибку, если она возникает
-        logger.error(f"Exception occurred: {e}", exc_info=True)
-        logger.error(f"Values at the moment of exception: user_id={user_id}, payload={unique_payload}, amount={amount}, currency={currency}")
+        #logger.error(f"Exception occurred: {e}", exc_info=True)
+        #logger.error(f"Values at the moment of exception: user_id={user_id}, payload={unique_payload}, amount={amount}, currency={currency}")
         raise  # Пробрасываем исключение дальше, чтобы не потерять информацию об ошибке
     finally:
         cursor.close()
@@ -90,7 +92,7 @@ async def order(callback: CallbackQuery, bot: Bot):
     try:
         subscription_days = get_subscription_days(user_id)
         if subscription_days and subscription_days > 0:
-            await bot.send_message(callback.from_user.id, f"У вас уже есть активная подписка. Она заканчивается через {subscription_days} дней.")
+            await bot.send_message(callback.from_user.id, f"У вас уже есть активная подписка. Она заканчивается через {subscription_days} дней.", reply_markup=back_in_main_menu)
             return
     except Exception as e:
         print(f"Error checking subscription: {e}")
