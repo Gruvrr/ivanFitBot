@@ -108,8 +108,6 @@ success_trening_keyboard = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 
-
-
 async def generate_meal_keyboard():
     conn = connect()
     cursor = conn.cursor()

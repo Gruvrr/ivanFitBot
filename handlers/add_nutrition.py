@@ -30,24 +30,36 @@ async def add_description(message: Message, state: FSMContext):
 @router.message(Meal.description)
 async def add_count_days(message: Message, state: FSMContext):
     await state.update_data(description=message.text)
-    await state.set_state(Meal.count_days)
-    await message.answer(text="Напиши количество дней для текущего питания")
+    await state.set_state(Meal.week_number)
+    await message.answer(text="Напиши номер недели для этого питания")
 
 
-@router.message(Meal.count_days)
+@router.message(Meal.week_number)
 async def res(message: Message, state: FSMContext):
-    await state.update_data(count_days=message.text)
+    await state.update_data(week_number=message.text)
     data = await state.get_data()
     conn = connect()
     try:
         with conn.cursor() as cursor:
-            query = """
-            INSERT INTO meals (meal_name, meal_description, count_active_days) VALUES (%s, %s, %s);
+            # Добавление в таблицу meals
+            query_meals = """
+            INSERT INTO meals (name, description) VALUES (%s, %s) RETURNING id;
             """
-            values = (
-                data.get('name'), data.get('description'), data.get('count_days')
+            values_meals = (
+                data.get('name'), data.get('description')
             )
-            cursor.execute(query, values)
+            cursor.execute(query_meals, values_meals)
+            meal_id = cursor.fetchone()[0]  # Получение ID вставленного приема пищи
+
+            # Добавление в таблицу nutrition_plan_meal
+            query_nutrition_plan = """
+            INSERT INTO nutrition_plan_meal (week_number, mealid, date_add, is_active) VALUES (%s, %s, CURRENT_DATE, %s);
+            """
+            values_nutrition_plan = (
+                data.get('week_number'), meal_id, True
+            )
+            cursor.execute(query_nutrition_plan, values_nutrition_plan)
+
             conn.commit()
 
     except Exception as e:
@@ -58,6 +70,7 @@ async def res(message: Message, state: FSMContext):
 
     await state.clear()
     await message.answer("Прием пищи успешно добавлен✅")
+
 
 
 

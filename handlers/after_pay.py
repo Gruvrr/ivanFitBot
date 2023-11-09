@@ -4,7 +4,7 @@ from aiogram import Router
 from aiogram.types import Message
 
 from handlers.manual_send_treining import send_training_link_first_time
-from handlers.meal_handler import send_breakfast
+from handlers.meal_handler import send_meal_options
 
 router = Router
 
@@ -18,7 +18,6 @@ async def send_messages_after_pay(message: Message):
                          f"▪️12 тренировок по 30-45 минут\n"
                          f"▪️Меню на 4 недели\n"
                          f"▪️Чат с единомышленниками \n"
-                         f"▪️Прямые эфиры \n"
                          f"▪️Поддержка 24/7")
     time.sleep(5)
     await send_training_link_first_time(message, user_id)
@@ -28,4 +27,4 @@ async def send_messages_after_pay(message: Message):
                          f"План питания на ближайшие 7 дней! \n"
                          f"⬇️⬇️⬇️")
     time.sleep(3)
-    await send_breakfast(message)
+    await send_meal_options(message)

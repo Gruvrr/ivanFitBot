@@ -33,7 +33,7 @@ class Link(StatesGroup):
 class Meal(StatesGroup):
     name = State()
     description = State()
-    count_days = State()
+    week_number = State()
 
 
 class Question(StatesGroup):

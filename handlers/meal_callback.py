@@ -1,35 +1,36 @@
-# meal_callback.py
-from aiogram import Dispatcher
+from aiogram import F
 from aiogram.types import CallbackQuery
-from aiogram import Router, F
+from aiogram.dispatcher.router import Router
 from utils.db import connect, close
-from keyboards.inline import generate_meal_keyboard
 
 router = Router()
-dp = Dispatcher()
 
 
-@router.callback_query(lambda c: c.data.startswith('meal:'))
-async def on_meal_button_press(callback_query: CallbackQuery):
-    meal_name = callback_query.data.split(':')[1]
+@router.callback_query(lambda c: c.data.startswith("meal_") if c.data else False)
+async def handle_meal_selection(query: CallbackQuery):
+    meal_id = query.data.split("_")[1]
+
     conn = connect()
     cursor = conn.cursor()
-    keyboard = await generate_meal_keyboard()
 
     try:
-        cursor.execute("SELECT meal_description FROM meals WHERE meal_name = %s;", (meal_name,))
-        meal_description = cursor.fetchone()
-        if meal_description:
-            await callback_query.message.answer(f"Описание для {meal_name}:\n\n{meal_description[0]}", reply_markup=keyboard)
+        # Запрос для получения описания приема пищи по ID
+        cursor.execute("SELECT name, description FROM meals WHERE id = %s;", (meal_id,))
+        meal_data = cursor.fetchone()
+
+        if meal_data:
+            meal_name, meal_description = meal_data
+            await query.message.answer(
+                f"{meal_name}\n\n{meal_description}")
         else:
-            await callback_query.message.answer(f"Описание для {meal_name} не найдено.", reply_markup=keyboard)
+            await query.message.answer("Прием пищи не найден.")
 
     except Exception as e:
         print(f"Error: {e}")
-        await callback_query.message.answer("Произошла ошибка при извлечении данных.", reply_markup=keyboard)
+        await query.message.answer("Произошла ошибка при извлечении данных.")
 
     finally:
         cursor.close()
         close(conn)
 
-    await callback_query.answer()
+    await query.answer()
