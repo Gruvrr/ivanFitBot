@@ -2,6 +2,7 @@ from aiogram import F
 from aiogram.types import CallbackQuery
 from aiogram.dispatcher.router import Router
 from utils.db import connect, close
+from keyboards.inline import back_in_meal_menu
 
 router = Router()
 
@@ -21,7 +22,7 @@ async def handle_meal_selection(query: CallbackQuery):
         if meal_data:
             meal_name, meal_description = meal_data
             await query.message.answer(
-                f"{meal_name}\n\n{meal_description}")
+                f"{meal_name}\n\n{meal_description}", reply_markup=back_in_meal_menu)
         else:
             await query.message.answer("Прием пищи не найден.")
 

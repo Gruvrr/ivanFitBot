@@ -15,12 +15,13 @@ from keyboards.inline import gender_keyboard
 
 
 load_dotenv()
+router = Router()
 host = getenv("LOCALHOST")
 user = getenv("MYBOTUSER")
 password = getenv("MYPASSWORD")
 database = getenv("MYNAMEDB")
-router = Router()
 admin_id = getenv("ADMIN_ID")
+anna_id = getenv("ANNA_ID")
 token = getenv("TOKEN")
 bot = Bot(token=token)
 PHONE_REGEX = r'(?:(?:\+?([1-9]|[0-9][0-9]|[0-9][0-9][0-9])\s*(?:[.-]\s*)?)?(?:\(?([0-9][0-9][0-9])\)?\s*(?:[.-]\s*)?)?([0-9][0-9][0-9])\s*(?:[.-]\s*)?([0-9][0-9][0-9][0-9]))'

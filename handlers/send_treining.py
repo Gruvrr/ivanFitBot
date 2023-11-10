@@ -56,15 +56,11 @@ async def send_training_links(bot: Bot):
                     """, (last_sent_training_number,))
 
                 next_training = cursor.fetchone()
-                print(f"Это тренировка для отправки - {next_training}", )
 
                 if next_training:
                     training_number, training_url = next_training
-                    print(f"Сейчас отправится ссылка")
 
-                    print(user_id)
                     await bot.send_message(chat_id=user_id, text=f'Ссылка на вашу тренировку: {training_url}')
-                    print("Ссылка отправлена")
 
                     cursor.execute("""
                         INSERT INTO user_trainings (user_id, training_number, is_sent, sent_date)

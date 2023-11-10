@@ -31,6 +31,7 @@ class Link(StatesGroup):
 
 
 class Meal(StatesGroup):
+    is_new_cycle = State()
     name = State()
     description = State()
     week_number = State()

@@ -26,6 +26,18 @@ back_in_main_menu = InlineKeyboardMarkup(inline_keyboard=[
 )
 
 
+back_in_meal_menu = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(
+            text="Назад, к питанию",
+            callback_data="back_in_meal_menu"
+        )
+    ]
+],
+    resize_keyboard=True
+)
+
+
 user_gender_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(text="Мужской", callback_data="male1"),
@@ -99,7 +111,7 @@ success_trening_keyboard = InlineKeyboardMarkup(inline_keyboard=[
         ),
         InlineKeyboardButton(
             text="Питание 🍏",
-            callback_data="meal"
+            callback_data="back_in_meal_menu"
         )
     ],
     [
@@ -108,30 +120,30 @@ success_trening_keyboard = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 
-async def generate_meal_keyboard():
-    conn = connect()
-    cursor = conn.cursor()
-
-    try:
-        cursor.execute("SELECT meal_name FROM meals;")
-        meals = cursor.fetchall()
-
-        # Собираем все кнопки в список
-        buttons = [InlineKeyboardButton(text=meal[0], callback_data=f"meal:{meal[0]}") for meal in meals]
-        back_button = [InlineKeyboardButton(text="Вернуться в главное меню", callback_data="back_main_menu")]
-
-        # Создаем InlineKeyboardMarkup, передавая кнопки как список списков
-        keyboard_markup = InlineKeyboardMarkup(inline_keyboard=[buttons, back_button])
-
-        return keyboard_markup
-
-    except Exception as e:
-        print(f"Error: {e}")
-        return None
-
-    finally:
-        cursor.close()
-        conn.close()
+# async def generate_meal_keyboard():
+#     conn = connect()
+#     cursor = conn.cursor()
+#
+#     try:
+#         cursor.execute("SELECT meal_name FROM meals;")
+#         meals = cursor.fetchall()
+#
+#         # Собираем все кнопки в список
+#         buttons = [InlineKeyboardButton(text=meal[0], callback_data=f"meal:{meal[0]}") for meal in meals]
+#         back_button = [InlineKeyboardButton(text="Вернуться в главное меню", callback_data="back_main_menu")]
+#
+#         # Создаем InlineKeyboardMarkup, передавая кнопки как список списков
+#         keyboard_markup = InlineKeyboardMarkup(inline_keyboard=[buttons, back_button])
+#
+#         return keyboard_markup
+#
+#     except Exception as e:
+#         print(f"Error: {e}")
+#         return None
+#
+#     finally:
+#         cursor.close()
+#         conn.close()
 
 next_button = InlineKeyboardMarkup(inline_keyboard=[
     [

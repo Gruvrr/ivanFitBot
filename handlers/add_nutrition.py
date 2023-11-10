@@ -16,8 +16,18 @@ async def add_new_meal(message: Message, state: FSMContext):
     if message.from_user.id != int(admin_id):
         await message.answer("У тебя нет прав использовать эту команду")
     else:
-        await state.set_state(Meal.name)
-        await message.answer(text="Введи название приема пищи")
+        await state.set_state(Meal.is_new_cycle)
+        await message.answer(text="Начинается новый цикл? (да/нет)")
+
+
+@router.message(Meal.is_new_cycle)
+async def check_new_cycle(message: Message, state: FSMContext):
+    if message.text.lower() == 'да':
+        await state.update_data(is_new_cycle=True)
+    else:
+        await state.update_data(is_new_cycle=False)
+    await state.set_state(Meal.name)
+    await message.answer(text="Введи название приема пищи")
 
 
 @router.message(Meal.name)
@@ -41,6 +51,8 @@ async def res(message: Message, state: FSMContext):
     conn = connect()
     try:
         with conn.cursor() as cursor:
+            if data.get('is_new_cycle'):
+                cursor.execute("""UPDATE nutrition_plan_meal SET is_active = %s;""", (False,))
             # Добавление в таблицу meals
             query_meals = """
             INSERT INTO meals (name, description) VALUES (%s, %s) RETURNING id;

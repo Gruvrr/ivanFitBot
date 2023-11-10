@@ -92,7 +92,7 @@ async def send_training(callback: CallbackQuery):
 
     try:
         # Получаем ID пользователя из таблицы users по telegram_user_id
-        cursor.execute("SELECT id FROM users WHERE telegram_user_id = %s", (callback.from_user.id,))
+        cursor.execute("SELECT telegram_user_id FROM users WHERE telegram_user_id = %s", (callback.from_user.id,))
         user = cursor.fetchone()
         if not user:
             logging.info(f"Пользователь с telegram_user_id {callback.from_userid} не найден.")
@@ -118,7 +118,7 @@ async def send_training(callback: CallbackQuery):
         training_number, training_url = last_sent_training
 
         # Отправляем пользователю ссылку
-        await callback.message.answer(text=f'Ваша последняя тренировка (№{training_number}): {training_url}')
+        await callback.message.answer(text=f'{training_number}: {training_url}')
 
     except Exception as e:
         logging.error(f"Ошибка: {e}")
