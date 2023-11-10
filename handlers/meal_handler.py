@@ -84,7 +84,7 @@ async def send_meal_options_callback(callback: CallbackQuery):
             SELECT meals.id, meals.name
             FROM nutrition_plan_meal npm
             JOIN meals ON npm.mealid = meals.id
-            WHERE npm.week_number = %s;
+            WHERE npm.week_number = %s AND npm.is_active = true;
         """, (current_week,))
         meals = cursor.fetchall()
 

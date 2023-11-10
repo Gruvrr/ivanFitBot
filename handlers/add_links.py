@@ -10,6 +10,7 @@ load_dotenv()
 router = Router()
 admin_id = int(getenv("ADMIN_ID"))
 
+
 @router.message(Command("add_link"))
 async def add_training_number(message: Message, state: FSMContext):
     print(type(admin_id), type(message.from_user.id))
@@ -43,7 +44,7 @@ async def res(message: Message, state: FSMContext):
             cursor.execute(query, values)
             conn.commit()
 
-            # Проверка количества ссылок и обновление статуса 25-й ссылки при необходимости
+            # Проверка количества ссылок и обновление статуса 13-й ссылки при необходимости
             query = """
             WITH ranked_links AS (
                 SELECT id, ROW_NUMBER() OVER (ORDER BY date_added DESC) as rn
@@ -51,7 +52,7 @@ async def res(message: Message, state: FSMContext):
             )
             UPDATE training_links
             SET status = 'notactive'
-            WHERE id IN (SELECT id FROM ranked_links WHERE rn = 25);
+            WHERE id IN (SELECT id FROM ranked_links WHERE rn = 13);
             """
             cursor.execute(query)
             conn.commit()
