@@ -19,7 +19,8 @@ async def send_answer(callback: CallbackQuery):
     await callback.message.answer(text=f"Выберете категорию, по которой у вас появился вопрос:", reply_markup=question_answer_keyboard)
     await callback.answer()
 
-@router.callback_query(lambda c: c.data == "meal_question")
+
+@router.callback_query(lambda c: c.data == "questionformeal")
 async def send_answer_meal(callback: CallbackQuery):
     await callback.message.answer(text=f"‼️Часто задаваемые вопросы:‼️\n"
                                         f"❓ За какое время до и через какое время после тренировки можно есть? 🏋️‍♂️🍌🥤\n"
@@ -38,6 +39,8 @@ async def send_answer_meal(callback: CallbackQuery):
                                        f"под изменения.\n",
                                         reply_markup=meal_question_keyboard)
     await callback.answer()
+
+
 
     @router.callback_query(lambda c: c.data == "recomendation")
     async def send_recomendation_meal(callback: CallbackQuery):

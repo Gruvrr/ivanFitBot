@@ -1,5 +1,6 @@
 import time
 import datetime
+from datetime import datetime
 from aiogram.filters import Command
 import psycopg2
 from aiogram import F, Router
@@ -75,12 +76,12 @@ async def birth_day(message: Message, state: FSMContext):
 async def phone_number(message: Message, state: FSMContext):
     text = message.text
     try:
-        birth_date = datetime.datetime.strptime(text, '%d.%m.%Y')
+        birth_date = datetime.strptime(text, '%d.%m.%Y')
     except ValueError:
         await message.reply("Некорректный формат даты. Пожалуйста, попробуйте еще раз.")
         return
 
-    today = datetime.datetime.today()
+    today = datetime.today()
     age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
     if 0 <= age <= 95:
         await state.update_data(birth_date=birth_date)

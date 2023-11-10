@@ -29,11 +29,9 @@ def update_user_subscription(user_id):
     conn = connect()
     cursor = conn.cursor()
 
-    # Обновляем subscription_purchases
     cursor.execute("UPDATE users SET subscription_purchases = subscription_purchases + 1 WHERE telegram_user_id = %s",
                    (user_id,))
 
-    # Устанавливаем значение subscription_days на 28
     cursor.execute("UPDATE users SET subscription_days = 28 WHERE telegram_user_id = %s", (user_id,))
     cursor.execute("UPDATE users SET is_subscription_active = True WHERE telegram_user_id = %s", (user_id,))
 
@@ -46,19 +44,15 @@ def add_payment_to_db(user_id, unique_payload, amount, currency="RUB"):
     conn = connect()
     cursor = conn.cursor()
     try:
-        # Логируем данные, которые планируем вставить
-        #logger.info(f"Attempting to insert into payments: user_id={user_id}, payload={unique_payload}, amount={amount}, currency={currency}")
+
         cursor.execute("INSERT INTO payments (telegram_user_id, unique_payload, amount, currency, status) VALUES (%s, %s, %s, %s, 'Pending')", (user_id, unique_payload, amount, currency))
         conn.commit()
     except Exception as e:
-        # Логируем ошибку, если она возникает
-        #logger.error(f"Exception occurred: {e}", exc_info=True)
-        #logger.error(f"Values at the moment of exception: user_id={user_id}, payload={unique_payload}, amount={amount}, currency={currency}")
-        raise  # Пробрасываем исключение дальше, чтобы не потерять информацию об ошибке
+
+        raise
     finally:
         cursor.close()
         close(conn)
-
 
 
 def update_payment_status_in_db(unique_payload, status):
@@ -109,7 +103,7 @@ async def order(callback: CallbackQuery, bot: Bot):
                     "description": "Подписка на тренировки",
                     "quantity": "1.00",
                     "amount": {
-                        "value": "100.00",  # Укажите здесь цену за единицу товара или услуги
+                        "value": "777.00",  # Укажите здесь цену за единицу товара или услуги
                         "currency": "RUB"
                     },
                     "vat_code": 6  # НДС. Укажите актуальную ставку НДС, если она применима
@@ -122,13 +116,13 @@ async def order(callback: CallbackQuery, bot: Bot):
         await bot.send_invoice(
             chat_id=callback.from_user.id,
             title="Подписка на тренировки",
-            description="Проверка работоспособности платежей - 1 рубль",
+            description="Абонемент 28 дней",
             provider_token=pt,
             currency="rub",
             prices=[
                 LabeledPrice(
                     label="Цена",
-                    amount=10000
+                    amount=77700
                 )
             ],
             need_name=True,

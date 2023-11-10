@@ -13,6 +13,11 @@ class User(StatesGroup):
     telegram_user_id = State()
     count_active_days = State()
     count_subscription = State()
+    week_number = State()
+    start_date = State()
+    end_date = State()
+    nutrition_plan_meal_id =State()
+
 
 
 class Form(StatesGroup):
@@ -23,6 +28,7 @@ class Form(StatesGroup):
     phone_number = State()
     email = State()
     city = State()
+
 
 
 class Link(StatesGroup):

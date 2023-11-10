@@ -1,12 +1,11 @@
-import time
-import datetime
+from datetime import datetime
+import re
 from aiogram.filters import Command
 import psycopg2
 from aiogram import F, Router
 from aiogram.types import Message, ReplyKeyboardRemove, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram import Bot
-import handlers.main_menu
 from utils.states import User
 import re
 from dotenv import load_dotenv
@@ -58,12 +57,12 @@ async def birth_day_user(message: Message, state: FSMContext):
 async def user_phone_number(message: Message, state: FSMContext):
     text = message.text
     try:
-        birth_date = datetime.datetime.strptime(text, '%d.%m.%Y')
+        birth_date = datetime.strptime(text, '%d.%m.%Y')
     except ValueError:
         await message.reply("Некорректный формат даты. Пожалуйста, попробуйте еще раз.")
         return
 
-    today = datetime.datetime.today()
+    today = datetime.today()
     age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
     if 0 <= age <= 95:
         await state.update_data(birth_date=birth_date)
@@ -123,8 +122,62 @@ async def get_telegram_user_id(message: Message, state: FSMContext):
 
 
 @router.message(User.count_subscription)
-async def res(message: Message, state: FSMContext):
+async def get_telegram_user_id(message: Message, state: FSMContext):
     await state.update_data(count_subscription=message.text)
+    await state.set_state(User.week_number)
+    await message.answer(text="Введите номер недели для питания .")
+
+
+@router.message(User.week_number)
+async def get_telegram_user_id(message: Message, state: FSMContext):
+    await state.update_data(week_number=message.text)
+    await state.set_state(User.start_date)
+    await message.answer(text="Введите введите дату начала плана питания.")
+
+
+@router.message(User.start_date)
+async def get_start_date(message: Message, state: FSMContext):
+    date_text = message.text.strip()
+    date_format = '%d.%m.%Y'
+
+    # Проверяем, соответствует ли введенная дата формату ДД.ММ.ГГГГ
+    if re.match(r'^\d{2}.\d{2}.\d{4}$', date_text):
+        try:
+            # Пытаемся преобразовать текст в дату
+            start_date = datetime.strptime(date_text, date_format)
+
+            await state.update_data(start_date=start_date)
+            await state.set_state(User.end_date)  # Устанавливаем новое состояние
+            await message.answer("Введите дату окончания периода питания (в формате ДД.ММ.ГГГГ):")
+        except ValueError:
+            await message.answer("Некорректная дата. Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.")
+    else:
+        await message.answer("Некорректный формат даты. Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.")
+
+
+@router.message(User.end_date)
+async def get_end_date(message: Message, state: FSMContext):
+    date_text = message.text.strip()
+    date_format = '%d.%m.%Y'
+
+    # Проверяем, соответствует ли введенная дата формату ДД.ММ.ГГГГ
+    if re.match(r'^\d{2}.\d{2}.\d{4}$', date_text):
+        try:
+            # Пытаемся преобразовать текст в дату
+            end_date = datetime.strptime(date_text, date_format)
+
+            await state.update_data(end_date=end_date)
+            await state.set_state(User.nutrition_plan_meal_id)  # Устанавливаем новое состояние
+            await message.answer("Введите айди для недели питания этого пользователя")
+        except ValueError:
+            await message.answer("Некорректная дата. Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.")
+    else:
+        await message.answer("Некорректный формат даты. Пожалуйста, введите дату в формате ДД.ММ.ГГГГ.")
+
+
+@router.message(User.nutrition_plan_meal_id)
+async def res(message: Message, state: FSMContext):
+    await state.update_data(nutrition_plan_meal_id=message.text)
     data = await state.get_data()
     training_number = data.get("training_number")
     connection = None
@@ -146,6 +199,14 @@ async def res(message: Message, state: FSMContext):
             )
             cursor.execute(query, values)
 
+            # Вставка записи в таблицу user_meal_plan
+            insert_query = """
+                        INSERT INTO user_meal_plan (telegram_user_id, week_number, start_date, end_date, nutrition_plan_meal_id)
+                        VALUES (%s, %s, %s, %s, %s)
+                        """
+            values = (data.get('telegram_user_id'), data.get('week_number'), data.get('start_date'), data.get('end_date'), data.get('nutrition_plan_meal_id'))
+            cursor.execute(insert_query, values)
+
             # Выбираем тренировку
             select_training_query = """
                         SELECT training_number FROM training_links
@@ -153,7 +214,7 @@ async def res(message: Message, state: FSMContext):
                         ORDER BY date_added ASC
                         LIMIT 1
                         """
-            cursor.execute(select_training_query, (training_number,))
+            cursor.execute(select_training_query, data.get('training_number'))
             training_num = cursor.fetchone()
 
             if training_num:

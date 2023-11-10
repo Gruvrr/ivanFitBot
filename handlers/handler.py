@@ -46,7 +46,7 @@ async def get_start(event: Union[Message, CallbackQuery]):
             if not result:
                 print("Начало выполнения функции get_start")
                 await message.answer(
-                    text="Для продолжения прими <a href='https://docs.google.com/document/d/1BICRZ12uM-ZGyCHpu1bCtx5q4pkAHBbM/edit?usp=sharing&ouid=116349165456942383445&rtpof=true&sd=true'>политику конфиденциальности</a> и <a href='https://drive.google.com/file/d/1s95OsgiqLXni3uwudW_Ts5F2-9bg_rOF/view?usp=sharing'>публичную оферту</a>",
+                    text="Для продолжения прими <a href='https://drive.google.com/file/d/1U99TKxSujWCUsdDMbeBEWDy0skMLxWdV/view?usp=sharing'>политику конфиденциальности</a> и <a href='https://drive.google.com/file/d/1s95OsgiqLXni3uwudW_Ts5F2-9bg_rOF/view?usp=sharing'>публичную оферту</a>",
                     parse_mode='HTML',
                                      reply_markup=inline.accept_button)
             else:

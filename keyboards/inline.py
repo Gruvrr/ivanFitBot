@@ -200,7 +200,7 @@ help_keyboard = InlineKeyboardMarkup(inline_keyboard=[
 
 question_answer_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [
-        InlineKeyboardButton(text="Питание 🍏", callback_data="meal_question"),
+        InlineKeyboardButton(text="Питание 🍏", callback_data="questionformeal"),
         InlineKeyboardButton(text="Тренировки 🏃", callback_data="training_question")
     ],
     [
