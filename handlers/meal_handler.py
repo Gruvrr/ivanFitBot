@@ -81,10 +81,10 @@ async def send_meal_options_callback(callback: CallbackQuery):
 
         # Запрос для получения названий приемов пищи на текущей неделе
         cursor.execute("""
-            SELECT meals.id, meals.name
-            FROM nutrition_plan_meal npm
-            JOIN meals ON npm.mealid = meals.id
-            WHERE npm.week_number = %s AND npm.is_active = true;
+            SELECT meals.id, meals.name 
+            FROM nutrition_plan_meal 
+            JOIN meals ON meals.id = nutrition_plan_meal.mealid 
+            WHERE nutrition_plan_meal.week_number = %s AND nutrition_plan_meal.is_active = true;
         """, (current_week,))
         meals = cursor.fetchall()
 

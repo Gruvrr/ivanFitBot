@@ -32,7 +32,7 @@ def update_user_subscription(user_id):
     cursor.execute("UPDATE users SET subscription_purchases = subscription_purchases + 1 WHERE telegram_user_id = %s",
                    (user_id,))
 
-    cursor.execute("UPDATE users SET subscription_days = 28 WHERE telegram_user_id = %s", (user_id,))
+    cursor.execute("UPDATE users SET subscription_days = subscription_days + 28 WHERE telegram_user_id = %s", (user_id,))
     cursor.execute("UPDATE users SET is_subscription_active = True WHERE telegram_user_id = %s", (user_id,))
 
     conn.commit()
@@ -93,7 +93,7 @@ async def order(callback: CallbackQuery, bot: Bot):
         await bot.send_message(callback.from_user.id, "Произошла ошибка при проверке вашей подписки. Пожалуйста, попробуйте позже.")
         return
     unique_payload: str = generate_payload(user_id)
-    amount: int = 10000  # копейки
+    amount: int = 77700  # копейки
     currency: str = "RUB"
     add_payment_to_db(user_id, unique_payload, amount, currency)
     try:
