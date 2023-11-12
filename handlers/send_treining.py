@@ -8,6 +8,9 @@ from os import getenv
 load_dotenv()
 anna_id = getenv('ANNA_ID')
 
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+
 
 async def send_training_links(bot: Bot):
     conn = connect()
@@ -17,15 +20,17 @@ async def send_training_links(bot: Bot):
     try:
         today = datetime.datetime.now()
         day_of_week = today.weekday()
+        logging.info(f"Starting send_training_links for day of week: {day_of_week}")
 
         if day_of_week in [0, 2, 4]:  # Понедельник, Среда, Пятница
             cursor.execute("SELECT telegram_user_id FROM users WHERE is_subscription_active = TRUE")
             active_users = cursor.fetchall()
-            print(active_users)
+            logging.info(f"Found {len(active_users)} active users.")
 
             for user in active_users:
                 count += 1
                 user_id = user[0]
+                logging.info(f"Processing user: {user_id}")
 
                 # Проверяем, были ли уже отправлены какие-либо тренировки
                 cursor.execute("""
@@ -33,52 +38,63 @@ async def send_training_links(bot: Bot):
                     FROM user_trainings
                     WHERE user_id = %s AND is_sent = TRUE
                 """, (user_id,))
-
                 last_sent_training_number = cursor.fetchone()[0]
+                logging.info(f"Last sent training number for user {user_id}: {last_sent_training_number}")
 
                 if last_sent_training_number is None:
-                    # Если тренировки не отправлялись, выбираем первую тренировку со статусом 'active'
+                    logging.info(f"No trainings sent previously for user {user_id}. Fetching first active training.")
                     cursor.execute("""
-                        SELECT training_number, training_url
+                        SELECT id, training_number, training_url
                         FROM training_links
                         WHERE status = 'active'
                         ORDER BY training_number ASC
                         LIMIT 1
                     """)
+
                 else:
-                    # Если тренировки отправлялись, выбираем следующую тренировку со статусом 'active'
+                    logging.info(f"Fetching next training for user {user_id}")
                     cursor.execute("""
-                        SELECT training_number, training_url
-                        FROM training_links
-                        WHERE status = 'active' AND training_number > %s
-                        ORDER BY training_number ASC
+                        SELECT t1.id, t1.training_number, t1.training_url
+                        FROM training_links t1
+                        WHERE t1.id > (
+                            SELECT ut.training_id
+                            FROM user_trainings ut
+                            WHERE ut.user_id = %s AND ut.is_sent = TRUE
+                            ORDER BY ut.training_id DESC
+                            LIMIT 1
+                        )
+                        ORDER BY t1.id ASC
                         LIMIT 1
-                    """, (last_sent_training_number,))
+                    """, (user_id,))
 
                 next_training = cursor.fetchone()
+                logging.info(f"Next training for user {user_id}: {next_training}")
 
                 if next_training:
-                    training_number, training_url = next_training
-
-                    await bot.send_message(chat_id=user_id, text=f'Ссылка на вашу тренировку: {training_url}')
+                    id, training_number, training_url = next_training
+                    logging.info(f"Sending training link {training_url} to user {user_id}")
+                    await bot.send_message(chat_id=user_id, text=f'{training_url}')
 
                     cursor.execute("""
-                        INSERT INTO user_trainings (user_id, training_number, is_sent, sent_date)
-                        VALUES (%s, %s, TRUE, %s)
+                        INSERT INTO user_trainings (user_id, training_number, training_id, is_sent, sent_date)
+                        VALUES (%s, %s, %s, TRUE, %s)
                         ON CONFLICT (user_id, training_number)
-                        DO UPDATE SET is_sent = TRUE, sent_date = %s;
-                    """, (user_id, training_number, today, today))
+                        DO UPDATE SET is_sent = TRUE, sent_date = %s, training_id = %s;
+                    """, (user_id, training_number, id, today, today, id))
                     conn.commit()
                 else:
+                    logging.info(f"User {user_id} has completed all trainings. Sending message.")
                     await bot.send_message(chat_id=user_id,
                                            text='На данный момент, вы прошли все тренировки. '
                                                 'Новые тренировки появятся совсем скоро!')
             await bot.send_message(chat_id=anna_id, text=f"Сегодня тренировки получили - {count} человек.")
+            logging.info(f"Total users who received trainings today: {count}")
 
     except Exception as e:
-        logging.error(f"Error: {e}")
+        logging.error(f"Error in send_training_links: {e}")
         conn.rollback()
 
     finally:
         cursor.close()
         close(conn)
+        logging.info("Database connection closed.")

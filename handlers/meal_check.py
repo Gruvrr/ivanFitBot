@@ -1,4 +1,3 @@
-import asyncio
 import time
 from handlers.meal_handler import manage_nutrition
 from aiogram import Bot
@@ -24,12 +23,12 @@ async def check_meal_every_day(bot: Bot):
             telegram_user_id, end_date = user
 
             if end_date == datetime.now().date():
-                # Создание новой записи в user_send_meal
+                # Создание новой записи в user_meal_plan
+
                 new_start_date = datetime.now().date() + timedelta(days=1)
-                new_end_date = new_start_date + timedelta(days=7)
-                create_new_user_meal_plan(cursor, telegram_user_id, new_start_date, new_end_date)
+                create_new_user_meal_plan(cursor, telegram_user_id, new_start_date)
                 await bot.send_message(telegram_user_id, text=f"""Ваш план питания изменен!""")
-                time.sleep(3)
+                time.sleep(1)
                 await manage_nutrition(telegram_user_id, bot)
 
             elif end_date == datetime.now().date() + timedelta(days=2):
@@ -46,68 +45,38 @@ async def check_meal_every_day(bot: Bot):
         conn.close()
 
 
-def get_next_week_plan(cursor, telegram_user_id):
-    # Найти текущий week_number пользователя
-    cursor.execute("""
-        SELECT npm.week_number
-        FROM user_send_meal usm
-        JOIN nutrition_plan_meal npm ON usm.nutrition_plan_meal_id = npm.id
-        WHERE usm.telegram_user_id = %s
-        ORDER BY usm.end_date DESC
-        LIMIT 1;
-    """, (telegram_user_id,))
-    current_week_number = cursor.fetchone()[0]
-
-    # Определить номер следующей недели, учитывая цикличность
-    next_week_number = current_week_number + 1 if current_week_number < 4 else 1
-
-    # Выбрать план питания для следующей недели
-    cursor.execute("""
-        SELECT m.name 
-        FROM nutrition_plan_meal npm
-        JOIN meals m ON npm.mealid = m.id
-        WHERE npm.week_number = %s
-        AND npm.is_active = true;
-    """, (next_week_number,))
-    meals = cursor.fetchall()
-
-    return "\n".join(meal[0] for meal in meals)
-
-
-def create_new_user_meal_plan(cursor, telegram_user_id, start_date, end_date):
-    # Определение номера следующей недели
+def create_new_user_meal_plan(cursor, telegram_user_id, start_date):
+    # Получение текущего nutrition_plan_meal_id
     cursor.execute("""
         SELECT week_number
         FROM user_meal_plan
+        JOIN nutrition_plan_meal ON user_meal_plan.nutrition_plan_meal_id = nutrition_plan_meal.id
         WHERE telegram_user_id = %s
-        ORDER BY end_date DESC
+        ORDER BY user_meal_plan.end_date DESC
         LIMIT 1;
     """, (telegram_user_id,))
     result = cursor.fetchone()
-    current_week_number = result[0] if result else 0
-    next_week_number = current_week_number + 1 if current_week_number < 4 else 1
 
-    # Проверка существования записи для пользователя
-    cursor.execute("""
-        SELECT COUNT(*) FROM user_meal_plan
-        WHERE telegram_user_id = %s AND week_number = %s;
-    """, (telegram_user_id, next_week_number))
-    count = cursor.fetchone()[0]
+    if result:
+        current_week_number = result[0]
 
-    # Обновление или вставка записи
-    if count > 0:
-        # Обновление существующей записи
+        # Определение следующего week_number
+        next_week_number = 1 if current_week_number >= 4 else current_week_number + 1
+
+        # Нахождение минимального id для следующего week_number
         cursor.execute("""
-            UPDATE user_meal_plan
-            SET start_date = %s, end_date = %s, nutrition_plan_meal_id = %s
-            WHERE telegram_user_id = %s AND week_number = %s;
-        """, (start_date, end_date, telegram_user_id, next_week_number))
-    else:
-        # Создание новой записи
-        cursor.execute("""
-            INSERT INTO user_meal_plan (telegram_user_id, week_number, start_date, end_date)
-            VALUES (%s, %s, %s, %s);
-        """, (telegram_user_id, next_week_number, start_date, end_date))
+            SELECT MIN(id)
+            FROM nutrition_plan_meal
+            WHERE week_number = %s;
+        """, (next_week_number,))
+        next_nutrition_plan_meal_id_result = cursor.fetchone()
 
+        if next_nutrition_plan_meal_id_result:
+            next_nutrition_plan_meal_id = next_nutrition_plan_meal_id_result[0]
 
-
+            # Создание новой записи в user_meal_plan
+            new_end_date = start_date + timedelta(days=7)
+            cursor.execute("""
+                INSERT INTO user_meal_plan (telegram_user_id, week_number, start_date, end_date, nutrition_plan_meal_id)
+                VALUES (%s, %s, %s, %s, %s);
+            """, (telegram_user_id, next_week_number, start_date, new_end_date, next_nutrition_plan_meal_id))
