@@ -54,7 +54,7 @@ async def say_first_name(callback: CallbackQuery, state: FSMContext):
     print(gender)
     await state.update_data(gender=gender)
     await state.set_state(Form.first_name)
-    await callback.message.edit_text(text="Введите ваше имя!")
+    await callback.message.edit_text(text="Введите ваше имя")
     await callback.answer()
 
 

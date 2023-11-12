@@ -132,7 +132,7 @@ async def get_telegram_user_id(message: Message, state: FSMContext):
 async def get_telegram_user_id(message: Message, state: FSMContext):
     await state.update_data(week_number=message.text)
     await state.set_state(User.start_date)
-    await message.answer(text="Введите введите дату начала плана питания.")
+    await message.answer(text="Введите дату начала плана питания.")
 
 
 @router.message(User.start_date)
