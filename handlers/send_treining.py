@@ -4,12 +4,11 @@ from utils.db import connect, close
 import logging
 from dotenv import load_dotenv
 from os import getenv
+import logging
 
+logger = logging.getLogger(__name__)
 load_dotenv()
 anna_id = getenv('ANNA_ID')
-
-# Настройка логирования
-logging.basicConfig(level=logging.INFO)
 
 
 async def send_training_links(bot: Bot):
