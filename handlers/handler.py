@@ -22,7 +22,7 @@ async def send_menu(message: Message):
     if str(message.from_user.id) == admin_id:
         buttons = [
             [KeyboardButton(text=command) for command in ["/add_link", "/add_meal"]],
-            [KeyboardButton(text="/create_user")]
+            [KeyboardButton(text=command) for command in ["/create_user", "/send_training"]]
         ]
         markup = ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True)
         await message.answer("Выберите команду:", reply_markup=markup)

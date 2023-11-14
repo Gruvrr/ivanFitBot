@@ -17,8 +17,6 @@ dp = Dispatcher()
 token = getenv('TOKEN')
 admin_id = getenv("ADMIN_ID")
 
-print(f"{token}, Admin_id = {admin_id}")
-
 
 async def start_bot(bot: Bot):
     await bot.send_message(admin_id, text="Bot is start")
