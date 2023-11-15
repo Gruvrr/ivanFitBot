@@ -3,12 +3,13 @@ import logging
 from aiogram.types import CallbackQuery
 from aiogram import Router
 from utils.db import connect, close
-from keyboards.inline import help_keyboard, question_answer_keyboard, meal_question_keyboard, back_or_main_menu_keyboard, training_question_keyboard, pay_problem_keyboard
+from keyboards.inline import get_help_keyboard, question_answer_keyboard, back_or_main_menu_keyboard, training_question_keyboard, pay_problem_keyboard
 router = Router()
 
 
 @router.callback_query(lambda c: c.data == "help")
 async def send_help(callback: CallbackQuery):
+    help_keyboard = await get_help_keyboard(callback.from_user.id)
     await callback.message.answer(text=f"Добро пожаловать в раздел <b>ПОМОЩИ</b>\n"
                                        f"👉Выберите действие👈", reply_markup=help_keyboard, parse_mode="HTML")
     await callback.answer()
@@ -39,25 +40,6 @@ async def send_answer_meal(callback: CallbackQuery):
                                        f"под изменения.\n",
                                         reply_markup=meal_question_keyboard)
     await callback.answer()
-
-
-
-    @router.callback_query(lambda c: c.data == "recomendation")
-    async def send_recomendation_meal(callback: CallbackQuery):
-        await callback.message.answer(text=f"🥦Рекомендации по питанию🥦\n"
-                                           f" ❓ Что делать, если очень хочется есть, а все приемы пищи закончились? Или пошёл в ресторан/на др?\n"
-                                           f" Если все приемы пищи закончились, то можно поесть овощи и рыбу (без соли и соусов, приготовленные на пару или на гриле)\n"
-                                           f" ❓ Надо ли принимать витамины и какие рекомендуете?\n"
-                                           f" Рекомендую сдать анализы, чтобы понять чего не хватает вашему организму или пить комплексные витамины.\n"
-                                           f" ❓ Сколько яиц можно есть в день?\n"
-                                           f" Яйц можно есть неограниченное кол-во, главное желтков в зависимости от вашей массы теле естъ не более 3-6 штук в день.\n"
-                                           f" ❓ Если подошло время ужина (4-5 часов до сна), а я не хочу есть. Пропускать?\n"
-                                           f" Приемы пищи нельзя пропускать. Питание - это основа и система работы организма.\n"
-                                           f" ❓ За какое время до сна надо прекращать пить воду?\n"
-                                           f" Пить воду можно в любое время. Вода должна быть очищенная и не газированная.\n"
-                                           f" ❓ Как готовить без соли? Еда будет пресна!\n"
-                                           f" Мы уже настолько привыкли все солить, что отвыкли от реального вкуса еды. Покупайте свежие качественные продукты и используйте травы и приправы без соли.\n", reply_markup=back_or_main_menu_keyboard)
-        await callback.answer()
 
 
 @router.callback_query(lambda c: c.data == "training_question")

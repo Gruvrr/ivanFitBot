@@ -6,7 +6,7 @@ from os import getenv
 from dotenv import load_dotenv
 from keyboards import inline
 from handlers import (handler, questionary, pay, promocode, main_menu, add_links, send_treining, manual_send_treining,
-                      add_nutrition, meal_handler, meal_callback, help, new_user, meal_check)
+                      add_nutrition, meal_handler, meal_callback, help, new_user, meal_check, commands_for_admin)
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from handlers.subscription_manager import manage_subscriptions, manage_count_nutrition
 
@@ -39,7 +39,7 @@ async def start():
     dp.callback_query(handler.hello_msg, lambda c: c.data == "accept")
     dp.include_routers( handler.router, pay.router, main_menu.router, add_links.router,
                                 add_nutrition.router, inline.router, meal_handler.router, meal_callback.router,
-                                help.router, new_user.router, questionary.router)
+                                help.router, new_user.router, questionary.router, commands_for_admin.router)
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
     scheduler = AsyncIOScheduler()

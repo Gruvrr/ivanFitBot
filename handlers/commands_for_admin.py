@@ -1,17 +1,28 @@
+import os
 import pandas as pd
 from aiogram import Bot, Router
-from aiogram.types import Message
+from aiogram.types import Message, InputFile, BufferedInputFile
+from aiogram.filters import Command
 from utils.db import connect, close
-
+from os import getenv
+from dotenv import load_dotenv
+load_dotenv()
 router = Router()
 
+admin_id = getenv("ADMIN_ID")
+anna_id = getenv("ANNA_ID")
 
-@router.message(commands=['get_active_users'])
-async def get_active_users(message: Message, bot:Bot):
-    conn = connect()  # Устанавливаем соединение с базой данных
+
+@router.message(Command('get_active_users'))
+async def get_active_users(message: Message, bot: Bot):
+    if str(message.from_user.id) != admin_id or str(message.from_user.id) != anna_id:
+        await message.answer("Эта команда только для администратора.")
+        return
+
+    chat_id = message.chat.id
+    conn = connect()
     cursor = conn.cursor()
     try:
-        # Выполняем запрос к базе данных
         cursor.execute("""
             SELECT id, telegram_user_id, gender, first_name, last_name, birth_date, phone_number, email, city, is_subscription_active 
             FROM users 
@@ -19,20 +30,21 @@ async def get_active_users(message: Message, bot:Bot):
         """)
         rows = cursor.fetchall()
 
-        # Преобразуем результат в DataFrame
-        df = pd.DataFrame(rows, columns=["id", "telegram_user_id", "gender", "first_name", "last_name", "birth_date",
-                                         "phone_number", "email", "city", "is_subscription_active"])
+        df = pd.DataFrame(rows, columns=[
+            "id", "telegram_user_id", "gender", "first_name", "last_name",
+            "birth_date", "phone_number", "email", "city", "is_subscription_active"
+        ])
 
-        # Сохраняем DataFrame в Excel-файл
         excel_filename = "active_users.xlsx"
         df.to_excel(excel_filename, index=False)
 
-        # Отправляем файл пользователю
-        with open(excel_filename, 'rb') as file:
-            await bot.send_document(chat_id=message.chat.id, document=file)
+        # Создаем объект BufferedInputFile из файла
+        document = BufferedInputFile.from_file(path=excel_filename)
+
+        # Отправляем документ
+        await bot.send_document(chat_id=chat_id, document=document)
     except Exception as e:
-        await message.reply(f"Произошла ошибка: {e}")
+        await message.answer(f"Произошла ошибка: {e}")
     finally:
         cursor.close()
         close(conn)
-

@@ -77,8 +77,7 @@ subscribe_keyboard = InlineKeyboardMarkup(inline_keyboard=[
 pay_button: InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
-            text="Оплатить 💵",
-            callback_data="want_pay"
+            text="Оплатить 💵", callback_data="want_pay"
         )
     ]
 ])
@@ -190,6 +189,9 @@ help_keyboard = InlineKeyboardMarkup(inline_keyboard=[
         InlineKeyboardButton(text="Получить быстрый ответ ❓", callback_data="quick_answer")
     ],
     [
+        InlineKeyboardButton(text="Оплатить 💵", callback_data="want_pay")
+    ],
+    [
         InlineKeyboardButton(text="Проблема с оплатой 💸", callback_data="problem_pay")
     ],
     [
@@ -198,22 +200,52 @@ help_keyboard = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 
-question_answer_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+async def get_help_keyboard(user_id):
+    buttons = []
+    if await is_subscription_active(user_id):
+        buttons.append([InlineKeyboardButton(text="Перейти в канал для общения", url="https://t.me/+TgAj34afQ0lkOTIy")])
+    buttons.append([InlineKeyboardButton(text="Получить быстрый ответ ❓", callback_data="quick_answer")])
+    if await is_subscription_active(user_id):
+        buttons.append([InlineKeyboardButton(text="Купить 777 🛒", callback_data="do_you_want_pay")])
+    buttons.append([InlineKeyboardButton(text="Проблема с оплатой 💸", callback_data="problem_pay")])
+    buttons.append([InlineKeyboardButton(text="Назад 🔙", callback_data="back_main_menu")])
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
+
+
+async def is_subscription_active(user_id):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT 1 FROM users WHERE telegram_user_id = %s AND is_subscription_active = TRUE", (user_id,))
+    active_user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return active_user is not None
+
+
+@router.callback_query(lambda c: c.data == 'do_you_want_pay')
+async def do_you_want_pay(callback: CallbackQuery):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT subscription_days FROM users WHERE telegram_user_id = %s AND is_subscription_active = TRUE", (callback.from_user.id,))
+    subscribe_days = cursor.fetchone()
+    await callback.message.answer(text=f"У вас действует подписка {subscribe_days} дней. \n"
+                                       f"Хотите продлить абонемент?", reply_markup=new_abonement)
+
+
+new_abonement = InlineKeyboardMarkup(inline_keyboard=[
     [
-        InlineKeyboardButton(text="Питание 🍏", callback_data="questionformeal"),
-        InlineKeyboardButton(text="Тренировки 🏃", callback_data="training_question")
-    ],
-    [
-        InlineKeyboardButton(text="В главное меню ↩️", callback_data="back_main_menu")
+        InlineKeyboardButton(text='Да', callback_data="pay"),
+        InlineKeyboardButton(text="Нет", callback_data="back_main_menu")
     ]
 ])
 
-meal_question_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+
+question_answer_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [
-        InlineKeyboardButton(text="Рекомендации 👤", callback_data="recomendation")
+        InlineKeyboardButton(text="Тренировки 🏃", callback_data="training_question")
     ],
     [
-        InlineKeyboardButton(text="Назад 🔙", callback_data="qwestion/answer"),
         InlineKeyboardButton(text="В главное меню ↩️", callback_data="back_main_menu")
     ]
 ])
