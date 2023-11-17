@@ -22,15 +22,33 @@ async def get_active_users(message: Message, bot: Bot):
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                SELECT id, telegram_user_id, gender, first_name, last_name, birth_date, phone_number, email, city, is_subscription_active 
-                FROM users 
-                WHERE is_subscription_active = true;
+                SELECT 
+                    u.id, 
+                    u.telegram_user_id, 
+                    u.gender, 
+                    u.first_name, 
+                    u.last_name, 
+                    u.birth_date, 
+                    u.phone_number, 
+                    u.email, 
+                    u.city, 
+                    u.is_subscription_active,
+                    ump.start_date AS "дата начала питания",
+                    ump.end_date AS "дата окончания питания",
+                    MAX(p.timestamp) AS "дата последней оплаты"
+                FROM users u
+                LEFT JOIN user_meal_plan ump ON u.telegram_user_id = ump.telegram_user_id
+                LEFT JOIN payments p ON u.telegram_user_id = p.telegram_user_id
+                WHERE u.is_subscription_active = true
+                GROUP BY u.id, ump.start_date, ump.end_date
+                ORDER BY u.id;
             """)
             rows = cursor.fetchall()
 
             df = pd.DataFrame(rows, columns=[
                 "id", "telegram_user_id", "gender", "first_name", "last_name",
-                "birth_date", "phone_number", "email", "city", "is_subscription_active"
+                "birth_date", "phone_number", "email", "city", "is_subscription_active",
+                "дата начала питания", "дата окончания питания", "дата последней оплаты"
             ])
 
             excel_filename = "active_users.xlsx"

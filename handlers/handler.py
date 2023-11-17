@@ -23,7 +23,7 @@ async def send_menu(message: Message):
         buttons = [
             [KeyboardButton(text=command) for command in ["/add_link", "/add_meal"]],
             [KeyboardButton(text=command) for command in ["/create_user", "/send_training"]],
-            [KeyboardButton(text=command) for command in ["/get_active_users"]]
+            [KeyboardButton(text=command) for command in ["/get_active_users", "/add_week_nutrition"]]
         ]
         markup = ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True)
         await message.answer("Выберите команду:", reply_markup=markup)

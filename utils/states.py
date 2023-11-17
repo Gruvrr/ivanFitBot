@@ -16,8 +16,12 @@ class User(StatesGroup):
     week_number = State()
     start_date = State()
     end_date = State()
-    nutrition_plan_meal_id =State()
+    nutrition_plan_meal_id = State()
 
+
+class WeekNutrition(StatesGroup):
+    nutrition_plan_meal_id = State()
+    description = State()
 
 
 class Form(StatesGroup):

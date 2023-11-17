@@ -6,9 +6,9 @@ from os import getenv
 from dotenv import load_dotenv
 from keyboards import inline
 from handlers import (handler, questionary, pay, promocode, main_menu, add_links, send_treining, manual_send_treining,
-                      add_nutrition, meal_handler, meal_callback, help, new_user, meal_check, commands_for_admin)
+                      add_nutrition, meal_handler, meal_callback, help, new_user, meal_check, commands_for_admin, add_week_nutrition)
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from handlers.subscription_manager import manage_subscriptions, manage_count_nutrition
+from handlers.subscription_manager import manage_subscriptions
 
 
 load_dotenv()
@@ -39,13 +39,13 @@ async def start():
     dp.callback_query(handler.hello_msg, lambda c: c.data == "accept")
     dp.include_routers( handler.router, pay.router, main_menu.router, add_links.router,
                                 add_nutrition.router, inline.router, meal_handler.router, meal_callback.router,
-                                help.router, new_user.router, questionary.router, commands_for_admin.router)
+                                help.router, new_user.router, questionary.router, commands_for_admin.router, add_week_nutrition.router)
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
     scheduler = AsyncIOScheduler()
     scheduler.add_job(send_treining.send_training_links, args=[bot], trigger='cron', day_of_week='mon,wed,fri', hour=6)
     scheduler.add_job(manage_subscriptions, args=[bot], trigger='cron', day_of_week='mon,tue,wed,thu,fri,sat,sun', hour=12)
-    scheduler.add_job(meal_check.check_meal_every_day, args=[bot], trigger='cron', day_of_week='mon,tue,wed,thu,fri,sat,sun', hour=9)
+    scheduler.add_job(meal_check.check_meal_every_day, args=[bot], trigger='cron', day_of_week='mon,tue,wed,thu,fri,sat,sun', hour=10, minute=53)
     scheduler.start()
     try:
         await dp.start_polling(bot)
