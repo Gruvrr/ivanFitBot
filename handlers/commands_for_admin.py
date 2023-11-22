@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 from aiogram import Bot, Router
 from aiogram.types import Message, InputFile, BufferedInputFile

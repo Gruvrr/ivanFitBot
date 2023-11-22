@@ -110,7 +110,7 @@ def get_week_nutrition_description(nutrition_plan_meal_id: int) -> str:
 def create_new_user_meal_plan(cursor, telegram_user_id, start_date):
     # Получение текущего nutrition_plan_meal_id
     cursor.execute("""
-        SELECT week_number
+        SELECT week_number, nutrition_plan_meal_id
         FROM user_meal_plan
         WHERE telegram_user_id = %s
         ORDER BY end_date DESC
@@ -119,7 +119,7 @@ def create_new_user_meal_plan(cursor, telegram_user_id, start_date):
     result = cursor.fetchone()
 
     if result:
-        current_week_number = result[0]
+        current_week_number, current_nutrition_plan_meal_id = result
 
         # Определение следующего week_number
         next_week_number = 1 if current_week_number >= 4 else current_week_number + 1
@@ -128,8 +128,8 @@ def create_new_user_meal_plan(cursor, telegram_user_id, start_date):
         cursor.execute("""
             SELECT MIN(id)
             FROM nutrition_plan_meal
-            WHERE week_number = %s;
-        """, (next_week_number,))
+            WHERE week_number = %s AND id > %s;
+        """, (next_week_number, current_nutrition_plan_meal_id))
         next_nutrition_plan_meal_id_result = cursor.fetchone()
 
         if next_nutrition_plan_meal_id_result:

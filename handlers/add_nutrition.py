@@ -1,5 +1,5 @@
-from aiogram import F, Router
-from aiogram.types import Message, ReplyKeyboardRemove, CallbackQuery
+from aiogram import Router
+from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from utils.states import Meal
 from aiogram.filters import Command
