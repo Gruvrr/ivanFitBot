@@ -44,8 +44,8 @@ async def start():
     dp.shutdown.register(stop_bot)
     scheduler = AsyncIOScheduler()
     scheduler.add_job(send_treining.send_training_links, args=[bot], trigger='cron', day_of_week='mon,wed,fri', hour=6)
-    scheduler.add_job(manage_subscriptions, args=[bot], trigger='cron', day_of_week='mon,tue,wed,thu,fri,sat,sun', hour=12)
-    scheduler.add_job(meal_check.check_meal_every_day, args=[bot], trigger='cron', day_of_week='mon,tue,wed,thu,fri,sat,sun', hour=10, minute=53)
+    scheduler.add_job(manage_subscriptions, args=[bot], trigger='cron', day_of_week='mon,tue,wed,thu,fri,sat,sun', hour=9)
+    scheduler.add_job(meal_check.check_meal_every_day, args=[bot], trigger='cron', day_of_week='mon,tue,wed,thu,fri,sat,sun', hour=10)
     scheduler.start()
     try:
         await dp.start_polling(bot)

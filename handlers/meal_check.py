@@ -11,7 +11,7 @@ async def check_meal_every_day(bot: Bot):
 
     try:
         cursor.execute("""
-            SELECT usm.telegram_user_id, usm.end_date
+            SELECT usm.telegram_user_id, usm.subscription_days, usm.end_date
             FROM user_meal_plan usm
             JOIN users u ON usm.telegram_user_id = u.telegram_user_id
             WHERE u.is_subscription_active = true;
@@ -20,7 +20,7 @@ async def check_meal_every_day(bot: Bot):
         users = cursor.fetchall()
 
         for user in users:
-            telegram_user_id, end_date = user
+            telegram_user_id, subscription_days, end_date = user
 
             if end_date == datetime.now().date():
                 # Создание новой записи в user_meal_plan
@@ -30,8 +30,7 @@ async def check_meal_every_day(bot: Bot):
                 await bot.send_message(telegram_user_id, text=f"""Ваш план питания изменен!""")
                 time.sleep(1)
                 await manage_nutrition(telegram_user_id, bot)
-
-            elif end_date == datetime.now().date() + timedelta(days=2):
+            elif end_date == datetime.now().date() + timedelta(days=2) and subscription_days > 2:
                 # План питания изменится через два дня
                 await bot.send_message(telegram_user_id, f"Ваш план питания изменится через два дня."
                                                          f"Подготовьте, пожалуйста,  продукты на следующие 7 дней.")

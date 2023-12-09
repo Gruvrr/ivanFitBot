@@ -54,14 +54,21 @@ async def manage_subscriptions(bot: Bot):
                     "UPDATE users SET is_subscription_active = False, subscription_days = %s WHERE telegram_user_id = %s",
                     (new_subscription_days, telegram_user_id)
                 )
+                await bot.send_message(telegram_user_id, text=f"У вас закончилась подписка.\n Купить новую вы можете "
+                                                              f"нажав на кнопку ниже.",reply_markup=pay_button)
             else:
                 cursor.execute(
                     "UPDATE users SET subscription_days = %s WHERE telegram_user_id = %s",
                     (new_subscription_days, telegram_user_id)
                 )
 
-            if new_subscription_days == 2:
-                await bot.send_message(telegram_user_id, "Ваша подписка закончится через 2 дня.", reply_markup=pay_button)
+            if new_subscription_days <= 2:
+                count_days = str
+                if new_subscription_days == 2:
+                    count_days = "дня"
+                elif new_subscription_days == 1:
+                    count_days = "день"
+                await bot.send_message(telegram_user_id, f"Ваша подписка закончится через {new_subscription_days} {count_days}.", reply_markup=pay_button)
 
         conn.commit()
 
