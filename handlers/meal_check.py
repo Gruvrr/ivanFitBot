@@ -135,7 +135,7 @@ def create_new_user_meal_plan(cursor, telegram_user_id, start_date):
             next_nutrition_plan_meal_id = next_nutrition_plan_meal_id_result[0]
 
             # Создание новой записи в user_meal_plan
-            new_end_date = start_date + timedelta(days=7)
+            new_end_date = start_date + timedelta(days=6)
             cursor.execute("""
                 INSERT INTO user_meal_plan (telegram_user_id, week_number, start_date, end_date, nutrition_plan_meal_id)
                 VALUES (%s, %s, %s, %s, %s);

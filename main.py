@@ -10,9 +10,7 @@ from handlers import (handler, questionary, pay, promocode, main_menu, add_links
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from handlers.subscription_manager import manage_subscriptions
 
-
 load_dotenv()
-
 dp = Dispatcher()
 token = getenv('TOKEN')
 admin_id = getenv("ADMIN_ID")
