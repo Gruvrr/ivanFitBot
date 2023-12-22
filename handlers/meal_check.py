@@ -1,3 +1,4 @@
+import asyncio
 import time
 from handlers.meal_handler import manage_nutrition
 from aiogram import Bot
@@ -29,10 +30,11 @@ async def check_meal_every_day(bot: Bot):
 
         """)
         users = cursor.fetchall()
+        conn.commit()
         logger.info(f"Извлечение активных пользователей успешно!")
 
         for user in users:
-            telegram_user_id,first_name, last_name, subscription_days, end_date = user
+            telegram_user_id, first_name, last_name, subscription_days, end_date = user
             full_name = f"{first_name} {last_name}"
             current_date = datetime.now().date()
 
@@ -40,10 +42,11 @@ async def check_meal_every_day(bot: Bot):
                 logger.info(f"Сработало условие - если сегодня заканчивается план питания или он был завершен давно для пользователя - {telegram_user_id}")
                 users_today.append(full_name)
                 new_start_date = datetime.now().date() + timedelta(days=1)
-                create_new_user_meal_plan(cursor, telegram_user_id, new_start_date)
+                await create_new_user_meal_plan(telegram_user_id, new_start_date, bot)
                 await bot.send_message(telegram_user_id, text=f"""Ваш план питания изменен!""")
-                time.sleep(1)
+                await asyncio.sleep(1)
                 await manage_nutrition(telegram_user_id, bot)
+
             elif end_date == datetime.now().date() + timedelta(days=2) and subscription_days > 2:
                 logger.info(
                     f"Сработало условие - если план питания заканчивается через 2 дня для пользователя - {telegram_user_id}")
@@ -59,7 +62,7 @@ async def check_meal_every_day(bot: Bot):
         if users_in_two_days:
             users_in_two_days_str = ', '.join(users_in_two_days)
             await bot.send_message(admin_id, text=f"Через два дня план питания изменится для: {users_in_two_days_str}")
-        conn.commit()
+
 
     except Exception as e:
         print(f"Произошла ошибка: {e}")
@@ -131,37 +134,51 @@ def get_week_nutrition_description(nutrition_plan_meal_id: int) -> str:
         conn.close()
 
 
-def create_new_user_meal_plan(cursor, telegram_user_id, start_date):
-    # Получение текущего nutrition_plan_meal_id
-    cursor.execute("""
-        SELECT week_number, nutrition_plan_meal_id
-        FROM user_meal_plan
-        WHERE telegram_user_id = %s
-        ORDER BY end_date DESC
-        LIMIT 1;
-    """, (telegram_user_id,))
-    result = cursor.fetchone()
+async def create_new_user_meal_plan(telegram_user_id, start_date, bot):
+    try:
+        with connect() as conn:  # Открываем соединение с базой данных
+            with conn.cursor() as cursor:  # Открываем курсор
+                # Получение текущего nutrition_plan_meal_id
+                cursor.execute("""
+                    SELECT week_number, nutrition_plan_meal_id
+                    FROM user_meal_plan
+                    WHERE telegram_user_id = %s
+                    ORDER BY end_date DESC
+                    LIMIT 1;
+                """, (telegram_user_id,))
+                result = cursor.fetchone()
 
-    if result:
-        current_week_number, current_nutrition_plan_meal_id = result
+                if result:
+                    current_week_number, current_nutrition_plan_meal_id = result
 
-        # Определение следующего week_number
-        next_week_number = 1 if current_week_number >= 4 else current_week_number + 1
+                    # Определение следующего week_number
+                    next_week_number = 1 if current_week_number >= 4 else current_week_number + 1
 
-        # Нахождение минимального id для следующего week_number
-        cursor.execute("""
-            SELECT MIN(id)
-            FROM nutrition_plan_meal
-            WHERE week_number = %s AND id > %s;
-        """, (next_week_number, current_nutrition_plan_meal_id))
-        next_nutrition_plan_meal_id_result = cursor.fetchone()
+                    # Нахождение минимального id для следующего week_number
+                    cursor.execute("""
+                        SELECT MIN(id)
+                        FROM nutrition_plan_meal
+                        WHERE week_number = %s AND id > %s;
+                    """, (next_week_number, current_nutrition_plan_meal_id))
+                    next_nutrition_plan_meal_id_result = cursor.fetchone()
 
-        if next_nutrition_plan_meal_id_result:
-            next_nutrition_plan_meal_id = next_nutrition_plan_meal_id_result[0]
+                    if next_nutrition_plan_meal_id_result:
+                        next_nutrition_plan_meal_id = next_nutrition_plan_meal_id_result[0]
 
-            # Создание новой записи в user_meal_plan
-            new_end_date = start_date + timedelta(days=6)
-            cursor.execute("""
-                INSERT INTO user_meal_plan (telegram_user_id, week_number, start_date, end_date, nutrition_plan_meal_id)
-                VALUES (%s, %s, %s, %s, %s);
-            """, (telegram_user_id, next_week_number, start_date, new_end_date, next_nutrition_plan_meal_id))
+                        # Создание новой записи в user_meal_plan
+                        new_end_date = start_date + timedelta(days=6)
+                        cursor.execute("""
+                            INSERT INTO user_meal_plan (telegram_user_id, week_number, start_date, end_date, nutrition_plan_meal_id)
+                            VALUES (%s, %s, %s, %s, %s);
+                        """, (telegram_user_id, next_week_number, start_date, new_end_date, next_nutrition_plan_meal_id))
+                        logger.info(f"Новый план питания создан для пользователя {telegram_user_id}")
+                else:
+                    logger.warning(f"Данные текущего плана питания не найдены для пользователя {telegram_user_id}")
+
+                conn.commit()
+                logger.info(f"Добавлен новый план питания")
+
+
+    except Exception as e:
+        logger.error(f"Произошла ошибка при создании нового плана питания для пользователя {telegram_user_id}: {e}")
+        raise  # Перевыбрасываем исключение для дальнейшей обработки

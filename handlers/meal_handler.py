@@ -2,6 +2,9 @@ from aiogram import Router, F, Bot
 from aiogram.types import Message, CallbackQuery
 from utils.db import connect, close
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 router = Router()
@@ -112,6 +115,7 @@ async def send_meal_options_callback(callback: CallbackQuery):
 
 
 async def manage_nutrition(telegram_user_id, bot: Bot):
+    logger.info(f"Началась функция менеджера питания")
     conn = connect()
     cursor = conn.cursor()
     # Выполнение запроса для получения номера текущей недели
@@ -119,7 +123,8 @@ async def manage_nutrition(telegram_user_id, bot: Bot):
             SELECT week_number
             FROM user_meal_plan
             WHERE telegram_user_id = %s 
-            AND CURRENT_DATE BETWEEN start_date AND end_date;
+            ORDER BY id DESC
+            LIMIT 1;
             """, (telegram_user_id,))
     result = cursor.fetchone()
 
@@ -143,13 +148,12 @@ async def manage_nutrition(telegram_user_id, bot: Bot):
         # Создание кнопок с использованием ID приемов пищи
         buttons = [InlineKeyboardButton(text=meal[1], callback_data="meal_" + str(meal[0])) for meal in meals]
 
-        # Создание отдельной кнопки "Next 3"
         next3_button = InlineKeyboardButton(text="В главное меню!", callback_data="next3")
 
-        # Создание клавиатуры с кнопками и добавление кнопки "Next 3"
         keyboard = InlineKeyboardMarkup(inline_keyboard=[[button] for button in buttons] + [[next3_button]])
 
         await bot.send_message(chat_id=telegram_user_id, text="Выберите прием пищи", reply_markup=keyboard)
+
 
     except Exception as e:
         print(f"Error: {e}")
@@ -158,3 +162,4 @@ async def manage_nutrition(telegram_user_id, bot: Bot):
     finally:
         cursor.close()
         close(conn)
+        logger.info(f"Функция менеджера питания закончилась")
