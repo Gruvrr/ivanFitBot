@@ -4,6 +4,11 @@ from aiogram import Bot
 from datetime import datetime, timedelta
 from utils.db import connect, close
 import logging
+from os import getenv
+from dotenv import load_dotenv
+load_dotenv()
+
+admin_id = getenv("ADMIN_ID")
 
 logger = logging.getLogger(__name__)
 
@@ -12,9 +17,12 @@ async def check_meal_every_day(bot: Bot):
     conn = connect()
     cursor = conn.cursor()
 
+    users_today = []
+    users_in_two_days = []
+
     try:
         cursor.execute("""
-            SELECT usm.telegram_user_id, u.subscription_days, usm.end_date
+            SELECT usm.telegram_user_id, u.first_name, u.last_name, u.subscription_days, usm.end_date
             FROM user_meal_plan usm
             JOIN users u ON usm.telegram_user_id = u.telegram_user_id
             WHERE u.is_subscription_active = true;
@@ -24,11 +32,13 @@ async def check_meal_every_day(bot: Bot):
         logger.info(f"Извлечение активных пользователей успешно!")
 
         for user in users:
-            telegram_user_id, subscription_days, end_date = user
+            telegram_user_id,first_name, last_name, subscription_days, end_date = user
+            full_name = f"{first_name} {last_name}"
             current_date = datetime.now().date()
 
             if end_date == current_date:
                 logger.info(f"Сработало условие - если сегодня заканчивается план питания или он был завершен давно для пользователя - {telegram_user_id}")
+                users_today.append(full_name)
                 new_start_date = datetime.now().date() + timedelta(days=1)
                 create_new_user_meal_plan(cursor, telegram_user_id, new_start_date)
                 await bot.send_message(telegram_user_id, text=f"""Ваш план питания изменен!""")
@@ -37,11 +47,18 @@ async def check_meal_every_day(bot: Bot):
             elif end_date == datetime.now().date() + timedelta(days=2) and subscription_days > 2:
                 logger.info(
                     f"Сработало условие - если план питания заканчивается через 2 дня для пользователя - {telegram_user_id}")
+                users_in_two_days.append(full_name)
                 await bot.send_message(telegram_user_id, f"Ваш план питания изменится через два дня."
                                                          f"Подготовьте, пожалуйста,  продукты на следующие 7 дней.")
                 description_meal = get_next_nutrition_plan_description(telegram_user_id)
                 await bot.send_message(telegram_user_id, text=description_meal)
+        if users_today:
+            users_today_str = ', '.join(users_today)
+            await bot.send_message(admin_id, text=f"Сегодня план питания изменен для: {users_today_str}")
 
+        if users_in_two_days:
+            users_in_two_days_str = ', '.join(users_in_two_days)
+            await bot.send_message(admin_id, text=f"Через два дня план питания изменится для: {users_in_two_days_str}")
         conn.commit()
 
     except Exception as e:
