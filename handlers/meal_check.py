@@ -3,6 +3,9 @@ from handlers.meal_handler import manage_nutrition
 from aiogram import Bot
 from datetime import datetime, timedelta
 from utils.db import connect, close
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 async def check_meal_every_day(bot: Bot):
@@ -11,27 +14,29 @@ async def check_meal_every_day(bot: Bot):
 
     try:
         cursor.execute("""
-            SELECT usm.telegram_user_id, usm.subscription_days, usm.end_date
+            SELECT usm.telegram_user_id, u.subscription_days, usm.end_date
             FROM user_meal_plan usm
             JOIN users u ON usm.telegram_user_id = u.telegram_user_id
             WHERE u.is_subscription_active = true;
 
         """)
         users = cursor.fetchall()
+        logger.info(f"Извлечение активных пользователей успешно!")
 
         for user in users:
             telegram_user_id, subscription_days, end_date = user
+            current_date = datetime.now().date()
 
-            if end_date == datetime.now().date():
-                # Создание новой записи в user_meal_plan
-
+            if end_date == current_date:
+                logger.info(f"Сработало условие - если сегодня заканчивается план питания или он был завершен давно для пользователя - {telegram_user_id}")
                 new_start_date = datetime.now().date() + timedelta(days=1)
                 create_new_user_meal_plan(cursor, telegram_user_id, new_start_date)
                 await bot.send_message(telegram_user_id, text=f"""Ваш план питания изменен!""")
                 time.sleep(1)
                 await manage_nutrition(telegram_user_id, bot)
             elif end_date == datetime.now().date() + timedelta(days=2) and subscription_days > 2:
-                # План питания изменится через два дня
+                logger.info(
+                    f"Сработало условие - если план питания заканчивается через 2 дня для пользователя - {telegram_user_id}")
                 await bot.send_message(telegram_user_id, f"Ваш план питания изменится через два дня."
                                                          f"Подготовьте, пожалуйста,  продукты на следующие 7 дней.")
                 description_meal = get_next_nutrition_plan_description(telegram_user_id)
@@ -41,6 +46,9 @@ async def check_meal_every_day(bot: Bot):
 
     except Exception as e:
         print(f"Произошла ошибка: {e}")
+        logger.info(
+            f"Произошла ошибка - {e}")
+
         conn.rollback()
     finally:
         cursor.close()
@@ -85,7 +93,7 @@ def get_next_nutrition_plan_description(telegram_user_id: int) -> str:
 
 def get_week_nutrition_description(nutrition_plan_meal_id: int) -> str:
     print(nutrition_plan_meal_id)
-    """ Получаем описание недельного плана питания по ID плана питания. """
+    #Получаем описание недельного плана питания по ID плана питания
     conn = connect()
     try:
         with conn.cursor() as cursor:
