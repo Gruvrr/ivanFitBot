@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 admin_id = getenv("ADMIN_ID")
+anna_id = getenv("ANNA_ID")
 
 logger = logging.getLogger(__name__)
 
@@ -58,10 +59,12 @@ async def check_meal_every_day(bot: Bot):
         if users_today:
             users_today_str = ', '.join(users_today)
             await bot.send_message(admin_id, text=f"Сегодня план питания изменен для: {users_today_str}")
+            await bot.send_message(anna_id, text=f"Сегодня план питания изменен для: {users_today_str}")
 
         if users_in_two_days:
             users_in_two_days_str = ', '.join(users_in_two_days)
             await bot.send_message(admin_id, text=f"Через два дня план питания изменится для: {users_in_two_days_str}")
+            await bot.send_message(anna_id, text=f"Через два дня план питания изменится для: {users_in_two_days_str}")
 
 
     except Exception as e:

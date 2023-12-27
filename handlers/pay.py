@@ -78,17 +78,6 @@ def get_subscription_days(user_id):
 async def order(callback: CallbackQuery, bot: Bot):
     user_id: int = callback.from_user.id
     print(type(pt))
-
-
-    #try:
-    #    subscription_days = get_subscription_days(user_id)
-    #     if subscription_days and subscription_days > 0:
-    #         await bot.send_message(callback.from_user.id, f"У вас уже есть активная подписка. Она заканчивается через {subscription_days} дней.", reply_markup=back_in_main_menu)
-    #         return
-    # except Exception as e:
-    #     print(f"Error checking subscription: {e}")
-    #     await bot.send_message(callback.from_user.id, "Произошла ошибка при проверке вашей подписки. Пожалуйста, попробуйте позже.")
-    #     return
     unique_payload: str = generate_payload(user_id)
     amount: int = 77700  # копейки
     currency: str = "RUB"
