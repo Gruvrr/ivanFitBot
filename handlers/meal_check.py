@@ -36,6 +36,7 @@ async def check_meal_every_day(bot: Bot):
 
         for user in users:
             telegram_user_id, first_name, last_name, subscription_days, end_date = user
+            print(end_date)
             full_name = f"{first_name} {last_name}"
             current_date = datetime.now().date()
 
@@ -55,6 +56,7 @@ async def check_meal_every_day(bot: Bot):
                 await bot.send_message(telegram_user_id, f"Ваш план питания изменится через два дня."
                                                          f"Подготовьте, пожалуйста,  продукты на следующие 7 дней.")
                 description_meal = get_next_nutrition_plan_description(telegram_user_id)
+
                 await bot.send_message(telegram_user_id, text=description_meal)
         if users_today:
             users_today_str = ', '.join(users_today)
@@ -78,6 +80,8 @@ async def check_meal_every_day(bot: Bot):
         conn.close()
 
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 def get_next_nutrition_plan_description(telegram_user_id: int) -> str:
     """ Получает описание следующего плана питания для пользователя по его Telegram ID. """
     conn = connect()
@@ -92,31 +96,36 @@ def get_next_nutrition_plan_description(telegram_user_id: int) -> str:
 
             if result and result[0]:
                 current_nutrition_plan_meal_id = result[0]
-                print(current_nutrition_plan_meal_id)
+                logging.info(f"Текущий nutrition_plan_meal_id: {current_nutrition_plan_meal_id}")
+                logging.info(
+                    f"Для пользователя {telegram_user_id} текущий план питания ID = {current_nutrition_plan_meal_id}), заканчивается через 2 дня.")
+
                 # Получение следующего nutrition_plan_meal_id
                 cursor.execute(
                     "SELECT nutrition_plan_meal_id FROM nutrition_week_plan WHERE nutrition_plan_meal_id > %s ORDER BY id ASC LIMIT 1",
                     (current_nutrition_plan_meal_id,)
                 )
                 next_result = cursor.fetchone()
+
                 if next_result and next_result[0]:
                     next_nutrition_plan_meal_id = next_result[0]
-                    # Получение описания следующего плана питания
+                    logging.info(f"Для пользователя {telegram_user_id} следующий nutrition_plan_meal_id = {next_nutrition_plan_meal_id}")
                     return get_week_nutrition_description(next_nutrition_plan_meal_id)
+
                 else:
+                    logging.warning("Следующий план питания не найден")
                     return "Следующий план питания не найден"
             else:
+                logging.warning("Текущий план питания для данного пользователя не найден")
                 return "Текущий план питания для данного пользователя не найден"
     except Exception as e:
-        print("Произошла ошибка: " + str(e))
+        logging.error(f"Произошла ошибка: {e}")
         return "Ошибка при получении данных"
     finally:
         conn.close()
 
-
 def get_week_nutrition_description(nutrition_plan_meal_id: int) -> str:
-    print(nutrition_plan_meal_id)
-    #Получаем описание недельного плана питания по ID плана питания
+    logging.info(f"Запрос описания плана питания с nutrition_plan_meal_id: {nutrition_plan_meal_id}")
     conn = connect()
     try:
         with conn.cursor() as cursor:
@@ -129,9 +138,10 @@ def get_week_nutrition_description(nutrition_plan_meal_id: int) -> str:
             if result:
                 return result[0]
             else:
+                logging.warning("Описание не найдено")
                 return "Описание не найдено"
     except Exception as e:
-        print("Произошла ошибка при получении данных: " + str(e))
+        logging.error(f"Произошла ошибка при получении данных: {e}")
         return "Ошибка при получении данных"
     finally:
         conn.close()
