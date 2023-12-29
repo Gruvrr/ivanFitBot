@@ -87,13 +87,12 @@ async def send_training(callback: CallbackQuery):
 
         # Получаем последнюю отправленную тренировку для пользователя с учетом URL из таблицы training_links
         cursor.execute("""
-                SELECT ut.training_number, tl.training_url, tl.training_id
-                FROM user_trainings ut
-                JOIN training_links tl ON ut.training_number = tl.training_number
-                WHERE ut.user_id = %s AND ut.is_sent = TRUE
-                ORDER BY ut.sent_date DESC
-                LIMIT 1
-            """, (user_id,))
+                         SELECT ut.training_id, tl.training_url
+                         FROM user_trainings ut
+                         JOIN training_links tl ON ut.training_id = tl.id
+                         WHERE ut.user_id = %s AND ut.is_sent = TRUE
+                         ORDER BY ut.sent_date DESC
+                         LIMIT 1""", (user_id,))
 
         last_sent_training = cursor.fetchone()
         if not last_sent_training:
