@@ -3,12 +3,11 @@ import time
 
 from aiogram import Bot
 from utils.db import connect, close
-import logging
 from dotenv import load_dotenv
 from os import getenv
 import logging
 
-logger = logging.getLogger(__name__)
+
 load_dotenv()
 anna_id = getenv('ANNA_ID')
 admin_id = getenv('ADMIN_ID')

@@ -7,12 +7,11 @@ from utils.db import connect, close
 import logging
 from os import getenv
 from dotenv import load_dotenv
-load_dotenv()
 
+
+load_dotenv()
 admin_id = getenv("ADMIN_ID")
 anna_id = getenv("ANNA_ID")
-
-logger = logging.getLogger(__name__)
 
 
 async def check_meal_every_day(bot: Bot):
@@ -32,7 +31,7 @@ async def check_meal_every_day(bot: Bot):
         """)
         users = cursor.fetchall()
         conn.commit()
-        logger.info(f"Извлечение активных пользователей успешно!")
+        logging.info(f"Извлечение активных пользователей успешно!")
 
         for user in users:
             telegram_user_id, first_name, last_name, subscription_days, end_date = user
@@ -41,7 +40,7 @@ async def check_meal_every_day(bot: Bot):
             current_date = datetime.now().date()
 
             if end_date == current_date:
-                logger.info(f"Сработало условие - если сегодня заканчивается план питания или он был завершен давно для пользователя - {telegram_user_id}")
+                logging.info(f"Сработало условие - если сегодня заканчивается план питания или он был завершен давно для пользователя - {telegram_user_id}")
                 users_today.append(full_name)
                 new_start_date = datetime.now().date() + timedelta(days=1)
                 await create_new_user_meal_plan(telegram_user_id, new_start_date, bot)
@@ -50,7 +49,7 @@ async def check_meal_every_day(bot: Bot):
                 await manage_nutrition(telegram_user_id, bot)
 
             elif end_date == datetime.now().date() + timedelta(days=2) and subscription_days > 2:
-                logger.info(
+                logging.info(
                     f"Сработало условие - если план питания заканчивается через 2 дня для пользователя - {telegram_user_id}")
                 users_in_two_days.append(full_name)
                 await bot.send_message(telegram_user_id, f"Ваш план питания изменится через два дня."
@@ -71,7 +70,7 @@ async def check_meal_every_day(bot: Bot):
 
     except Exception as e:
         print(f"Произошла ошибка: {e}")
-        logger.info(
+        logging.info(
             f"Произошла ошибка - {e}")
 
         conn.rollback()
@@ -79,8 +78,6 @@ async def check_meal_every_day(bot: Bot):
         cursor.close()
         conn.close()
 
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_next_nutrition_plan_description(telegram_user_id: int) -> str:
     """ Получает описание следующего плана питания для пользователя по его Telegram ID. """
@@ -184,14 +181,14 @@ async def create_new_user_meal_plan(telegram_user_id, start_date, bot):
                             INSERT INTO user_meal_plan (telegram_user_id, week_number, start_date, end_date, nutrition_plan_meal_id)
                             VALUES (%s, %s, %s, %s, %s);
                         """, (telegram_user_id, next_week_number, start_date, new_end_date, next_nutrition_plan_meal_id))
-                        logger.info(f"Новый план питания создан для пользователя {telegram_user_id}")
+                        logging.info(f"Новый план питания создан для пользователя {telegram_user_id}")
                 else:
-                    logger.warning(f"Данные текущего плана питания не найдены для пользователя {telegram_user_id}")
+                    logging.warning(f"Данные текущего плана питания не найдены для пользователя {telegram_user_id}")
 
                 conn.commit()
-                logger.info(f"Добавлен новый план питания")
+                logging.info(f"Добавлен новый план питания")
 
 
     except Exception as e:
-        logger.error(f"Произошла ошибка при создании нового плана питания для пользователя {telegram_user_id}: {e}")
+        logging.error(f"Произошла ошибка при создании нового плана питания для пользователя {telegram_user_id}: {e}")
         raise  # Перевыбрасываем исключение для дальнейшей обработки

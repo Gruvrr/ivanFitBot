@@ -2,9 +2,6 @@ from aiogram import Router, F, Bot
 from aiogram.types import Message, CallbackQuery
 from utils.db import connect, close
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 router = Router()
