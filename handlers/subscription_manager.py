@@ -33,6 +33,7 @@ async def manage_subscriptions(bot: Bot):
                     "UPDATE users SET subscription_days = %s WHERE telegram_user_id = %s",
                     (new_subscription_days, telegram_user_id)
                 )
+                conn.commit()
                 logging.info(f"User {telegram_user_id} subscription updated to {new_subscription_days} days")
 
             if new_subscription_days <= 2:
