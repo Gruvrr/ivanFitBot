@@ -12,7 +12,6 @@ from os import getenv
 from keyboards.inline import user_gender_keyboard
 import logging
 
-logger = logging.getLogger(__name__)
 
 
 load_dotenv()
@@ -181,7 +180,7 @@ async def get_end_date(message: Message, state: FSMContext):
 async def res(message: Message, state: FSMContext):
     await state.update_data(nutrition_plan_meal_id=message.text)
     data = await state.get_data()
-    logger.info(f"Received data: {data}")
+    logging.info(f"Received data: {data}")
 
     connection = None
     try:
@@ -191,11 +190,11 @@ async def res(message: Message, state: FSMContext):
             password=password,
             database=database
         )
-        logger.info("Connected to the database")
+        logging.info("Connected to the database")
 
         with connection.cursor() as cursor:
             # Вставка пользователя
-            logger.info("Inserting user data into the database")
+            logging.info("Inserting user data into the database")
             query = """
             INSERT INTO users (telegram_user_id, gender, first_name, last_name, birth_date, phone_number, email, city, subscription_days, subscription_purchases, is_subscription_active)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -205,20 +204,20 @@ async def res(message: Message, state: FSMContext):
                 data.get('birth_date'), data.get('phone_number'), data.get('email'), data.get('city'), data.get('count_active_days'), data.get('count_subscription'), "True"
             )
             cursor.execute(query, values)
-            logger.info(f"User {data.get('telegram_user_id')} inserted")
+            logging.info(f"User {data.get('telegram_user_id')} inserted")
 
             # Вставка записи в user_meal_plan
-            logger.info("Inserting data into user_meal_plan")
+            logging.info("Inserting data into user_meal_plan")
             insert_query = """
                         INSERT INTO user_meal_plan (telegram_user_id, week_number, start_date, end_date, nutrition_plan_meal_id)
                         VALUES (%s, %s, %s, %s, %s)
                         """
             values = (data.get('telegram_user_id'), data.get('week_number'), data.get('start_date'), data.get('end_date'), data.get('nutrition_plan_meal_id'))
             cursor.execute(insert_query, values)
-            logger.info(f"Meal plan for user {data.get('telegram_user_id')} inserted")
+            logging.info(f"Meal plan for user {data.get('telegram_user_id')} inserted")
 
             # Выборка и вставка тренировки
-            logger.info("Selecting and inserting training data")
+            logging.info("Selecting and inserting training data")
             select_training_query = """
                         SELECT training_number FROM training_links
                         WHERE training_number = %s AND status = 'active'
@@ -231,27 +230,27 @@ async def res(message: Message, state: FSMContext):
 
             if training_num:
                 number = training_num[0]
-                logger.info(f"Training number {number} selected")
+                logging.info(f"Training number {number} selected")
 
                 insert_sent_training_query = """
                             INSERT INTO user_trainings (user_id, training_number, is_sent, sent_date)
                             VALUES (%s, %s, 'true', NOW())"""
                 cursor.execute(insert_sent_training_query, (data.get('telegram_user_id'), number))
-                logger.info(f"Training {number} inserted for user {data.get('telegram_user_id')}")
+                logging.info(f"Training {number} inserted for user {data.get('telegram_user_id')}")
 
             connection.commit()
-            logger.info("Transaction committed")
+            logging.info("Transaction committed")
 
     except Exception as e:
-        logger.error(f"Error saving data to database: {e}", exc_info=True)
+        logging.error(f"Error saving data to database: {e}", exc_info=True)
         if connection:
             connection.rollback()
-            logger.info("Transaction rolled back")
+            logging.info("Transaction rolled back")
 
     finally:
         if connection:
             connection.close()
-            logger.info("Database connection closed")
+            logging.info("Database connection closed")
 
     await state.clear()
     await message.answer("Пользователь успешно добавлен!✅")

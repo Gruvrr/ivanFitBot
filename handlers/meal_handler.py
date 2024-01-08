@@ -1,3 +1,4 @@
+import logging
 from aiogram import Router, F, Bot
 from aiogram.types import Message, CallbackQuery
 from utils.db import connect, close
@@ -112,7 +113,7 @@ async def send_meal_options_callback(callback: CallbackQuery):
 
 
 async def manage_nutrition(telegram_user_id, bot: Bot):
-    logger.info(f"Началась функция менеджера питания")
+    logging.info(f"Началась функция менеджера питания")
     conn = connect()
     cursor = conn.cursor()
     # Выполнение запроса для получения номера текущей недели
@@ -159,4 +160,4 @@ async def manage_nutrition(telegram_user_id, bot: Bot):
     finally:
         cursor.close()
         close(conn)
-        logger.info(f"Функция менеджера питания закончилась")
+        logging.info(f"Функция менеджера питания закончилась")

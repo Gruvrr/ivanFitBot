@@ -65,14 +65,12 @@ async def check_meal_every_day(bot: Bot):
         if users_in_two_days:
             users_in_two_days_str = ', '.join(users_in_two_days)
             await bot.send_message(admin_id, text=f"Через два дня план питания изменится для: {users_in_two_days_str}")
-            await bot.send_message(anna_id, text=f"Через два дня план питания изменится для: {users_in_two_days_str}")
+            #await bot.send_message(anna_id, text=f"Через два дня план питания изменится для: {users_in_two_days_str}")
 
 
     except Exception as e:
-        print(f"Произошла ошибка: {e}")
         logging.info(
             f"Произошла ошибка - {e}")
-
         conn.rollback()
     finally:
         cursor.close()

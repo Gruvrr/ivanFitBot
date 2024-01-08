@@ -39,7 +39,7 @@ async def send_question(callback: CallbackQuery, state: FSMContext):
 async def res_question(message: Message, state: FSMContext):
     await state.update_data(text=message.text)
     data = await state.get_data()
-    msg = (f"Пользователь с таким nickname - @{message.from_user.username}, задает вопрос:\n"
+    msg = (f"Пользователь - {message.from_user.first_name} и телеграм id - {message.from_user.id} , задает вопрос:\n"
            f"{data.get('text')}")
     await bot.send_message(chat_id=admin_id, text=msg)
 

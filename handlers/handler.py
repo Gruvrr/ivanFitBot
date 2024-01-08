@@ -45,7 +45,7 @@ async def get_start(event: Union[Message, CallbackQuery]):
             result = cursor.fetchone()
             time.sleep(1)
             if not result:
-                print("Начало выполнения функции get_start")
+                logging.info("Начало выполнения функции get_start")
                 await message.answer(
                     text="Для продолжения прими <a href='https://drive.google.com/file/d/1U99TKxSujWCUsdDMbeBEWDy0skMLxWdV/view?usp=sharing'>политику конфиденциальности</a> и <a href='https://drive.google.com/file/d/1s95OsgiqLXni3uwudW_Ts5F2-9bg_rOF/view?usp=sharing'>публичную оферту</a>",
                     parse_mode='HTML',
@@ -58,10 +58,10 @@ async def get_start(event: Union[Message, CallbackQuery]):
                 else:
                     await main_menu(message)
     except Exception as _ex:
-        print("ERROR", _ex)
+        logging.info("ERROR", _ex)
     finally:
         close(conn)
-        print("[INFO] Postgresql connection close")
+        logging.info("[INFO] Postgresql connection close")
 
 
 @router.callback_query(lambda c: c.data == "accept" or c.data == "want_pay" or c.data == "about")
@@ -71,7 +71,7 @@ async def hello_msg(callback_query: CallbackQuery, bot: Bot, state: FSMContext):
         with conn.cursor() as cursor:
             cursor.execute(f"SELECT telegram_user_id from users WHERE telegram_user_id = {callback_query.from_user.id}")
             if not cursor.fetchone():
-                print("Начало выполнения функции hello_msg")
+                logging.info("Начало выполнения функции hello_msg")
                 await handlers.questionary.new_profile(callback_query.message, state)
                 await callback_query.answer()
             else:
@@ -84,10 +84,10 @@ async def hello_msg(callback_query: CallbackQuery, bot: Bot, state: FSMContext):
                                        )
                 await callback_query.answer()
     except Exception as _ex:
-        print("ERROR", _ex)
+        logging.info("ERROR", _ex)
     finally:
         close(conn)
-        print("[INFO] Postgresql connection close")
+        logging.info("[INFO] Postgresql connection close")
 
 
 async def start_msg(message: Message):
@@ -95,7 +95,6 @@ async def start_msg(message: Message):
     with conn.cursor() as cursor:
         cursor.execute(f"SELECT first_name from users WHERE telegram_user_id = {message.from_user.id}")
         first_name = cursor.fetchone()[0]
-        print(first_name)
     await message.answer(f"Привет, {first_name}\n"
                          f'Рад Видеть тебя на "Проекте 13"\n'
                          f"Поздравляю, это твой первый шаг на пути к здоровому и подтянутому телу! \n"
