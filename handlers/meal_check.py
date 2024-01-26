@@ -27,7 +27,6 @@ async def check_meal_every_day(bot: Bot):
             FROM user_meal_plan usm
             JOIN users u ON usm.telegram_user_id = u.telegram_user_id
             WHERE u.is_subscription_active = true;
-
         """)
         users = cursor.fetchall()
         conn.commit()
@@ -43,7 +42,18 @@ async def check_meal_every_day(bot: Bot):
                 logging.info(f"Сработало условие - если сегодня заканчивается план питания или он был завершен давно для пользователя - {telegram_user_id}")
                 users_today.append(full_name)
                 new_start_date = datetime.now().date() + timedelta(days=1)
-                await create_new_user_meal_plan(telegram_user_id, new_start_date, bot)
+                cursor.execute("""
+                    SELECT COUNT(*)
+                    FROM user_meal_plan
+                    WHERE telegram_user_id = %s AND end_date >= %s;
+                """, (telegram_user_id, current_date))
+                if cursor.fetchone()[0] == 0:
+                    # Если нет активных планов, можно создать новый
+                    create_new_user_meal_plan(telegram_user_id, new_start_date, bot)
+                else:
+                    # Если уже существует активный план, логируем эту ситуацию
+                    logging.warning(f"Уже существует активный план питания для пользователя {telegram_user_id}")
+
                 await bot.send_message(telegram_user_id, text=f"""Ваш план питания изменен!""")
                 await asyncio.sleep(1)
                 await manage_nutrition(telegram_user_id, bot)
@@ -142,7 +152,7 @@ def get_week_nutrition_description(nutrition_plan_meal_id: int) -> str:
         conn.close()
 
 
-async def create_new_user_meal_plan(telegram_user_id, start_date, bot):
+def create_new_user_meal_plan(telegram_user_id, start_date, bot):
     try:
         with connect() as conn:  # Открываем соединение с базой данных
             with conn.cursor() as cursor:  # Открываем курсор
